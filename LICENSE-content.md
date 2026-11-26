@@ -1,6 +1,6 @@
 # Content licence
 
-Copyright (c) 2026 Galivelo by Álvaro García Graña (Zeldris)
+Copyright (c) 2026 Galivelop by Álvaro García Graña (Zeldris)
 
 Unless a file says otherwise, the content of this project (texts, documentation, images, audio, video, data and
 other creative material, everything that is not source code) is licensed under the Creative Commons
