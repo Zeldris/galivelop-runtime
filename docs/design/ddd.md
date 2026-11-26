@@ -229,7 +229,7 @@ Cada una lleva su test.
 
 | Hito | Nivel | Qué | Lo decide |
 |---|---|---|---|
-| R0 | Diseño | Este DDD, las decisiones de §8 y el glosario (F-1). El paso a `main` y el reparto en versiones es F0 | Persona |
+| R0 | Diseño | Este DDD, las decisiones de §8 y el glosario (F-1). El paso a `main` y el reparto en versiones ([roadmap](../roadmap.md)) es F0 | Persona |
 | R1 | Extracción | `grun` con candado, cola, worker y soporte: base de gvoice más las funciones generales de gimg (P-6), con los tests de las invariantes 1-12 | Tests en verde |
 | R2 | Hueco | gimg toma el candado de máquina común (hoy no lo toma) y le pasa `held_fds` a sd.cpp: imagen y voz ya no coinciden en la GPU. Puede adelantarse a R1 con una copia de `machine_lock` (P-17) | Prueba en la Deck (persona) |
 | R3 | Migración gvoice | gvoice borra sus «Copiado de gimg@…» y vendoriza `grun` | Tests de gvoice en verde e invariante 13 |
