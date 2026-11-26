@@ -1,6 +1,6 @@
 # Retro F0: roadmap y revisión del bloque (2026-11-26)
 
-**Estado:** pendiente de la persona.
+**Estado:** decidida el 2026-11-26: P2 y P4 aprobadas y aplicadas; P3 aprobada y aplazada al empezar `0.1`; P1 rechazada (en Claude cloud no se pueden desactivar los conectores).
 
 Sesión tras el `/clear` del cierre de F-1: roadmap de versiones (`docs/roadmap.md`), revisión del bloque desde
 `origin/main` (0 hallazgos graves o medios, 1 leve), `gw-opt-tokens` y esta retro.

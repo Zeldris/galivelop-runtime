@@ -11,7 +11,7 @@ en `.claude/skills/` y su configuración en `.claude/gw.json` (solo la lee `.cla
 1. Lee la bitácora, `docs/handoff.md`: rama, tarea en curso, qué falta y siguiente paso.
 2. `git fetch origin <rama>`; `python3 .claude/gw/scripts/recover.py --state` dice en «Remote» si vas al día con
    `origin/<rama>`, y el último commit tiene que coincidir con lo que dice la bitácora.
-3. Comprueba que el check está en verde antes de tocar nada: `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`.
+3. Comprueba que el check está en verde antes de tocar nada: `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`.
 4. Sigue por el **siguiente paso** de la bitácora, salvo que la persona pida otra cosa.
 5. Al empezar cada tarea, trae la rama protegida con `python3 .claude/gw/scripts/merge-main.py` (fetch, commit del
    ledger de métricas, se niega con más cambios sin commit y `git merge origin/main`; merge, nunca
@@ -51,7 +51,7 @@ Cada sesión puede correr en un contenedor temporal: **lo que no está subido no
 
 ## Comprobar
 
-- **El check del proyecto:** `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`. `.githooks/pre-push` lo corre sobre el commit que se sube a
+- **El check del proyecto:** `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`. `.githooks/pre-push` lo corre sobre el commit que se sube a
   `main` o que cambia el entorno; a otra rama, solo los tests relacionados (`branchCheck`). El CI
   (`.github/workflows/check.yml`) lo corre entero en cada pull request y, salvo con `ciOnPush: false`, en cada
   push fuera de `main`.

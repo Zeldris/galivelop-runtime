@@ -22,3 +22,10 @@ las crea una vez; desde entonces son del proyecto.
 ## Referencias medidas
 
 <!-- Cifras medidas con las que comparar: fecha, sesión, contexto medio, llamadas, total. -->
+- 2026-11-26, F0 (roadmap y revisión, tras `/clear`): 16 llamadas, contexto medio 100 491, 1,61 M de entrada (97 % de
+  caché); arranque fijo ~80 950 por llamada (81 %). Revisor `gw-reviewer` (sonnet): 4 llamadas, 117 k.
+
+## Costes conocidos que no se pueden quitar
+
+- El arranque fijo de los conectores (`Claude_Docs`, `github`, `claude-code-remote`): en Claude cloud no se pueden
+  desactivar (retro F0, P1 rechazada). Solo baja haciendo menos llamadas.
