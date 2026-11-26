@@ -21,7 +21,12 @@
   "error.queue.bad_state": "invalid final state \"{state}\"; use one of: {states}",
   "error.worker.already_running": "a worker is already running ({path})",
   "error.worker.unexpected": "unexpected worker error: {message}",
-  "error.queue.invalid_transition": "entry {id} cannot go from {from} to {to}",
+  "error.queue.invalid_transition": "entry {id} cannot go from {source} to {target}",
   "error.queue.orphaned": "entry {id} was running but its worker is gone",
-  "error.net.non_local_host": "\"{host}\" is not a local address: only 127.0.0.1, localhost or ::1 are accepted"
+  "error.net.non_local_host": "\"{host}\" is not a local address: only 127.0.0.1, localhost or ::1 are accepted",
+  "error.engine.failed": "the engine failed: {message}",
+  "error.engine.timeout": "the engine ran past the time limit",
+  "error.engine.low_memory": "free memory fell to {free} MB, below the {min} MB of the machine profile: the engine was stopped",
+  "error.engine.unknown": "unknown engine \"{engine}\"",
+  "error.engine.binary_missing": "the engine program {path} is not installed (see the install script)"
 }

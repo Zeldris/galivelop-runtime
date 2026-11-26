@@ -22,7 +22,7 @@ class ErrorTests(unittest.TestCase):
 
     def test_new_codes_render_with_their_params(self):
         cases = {
-            "queue.invalid_transition": {"id": 3, "from": "done", "to": "running"},
+            "queue.invalid_transition": {"id": 3, "source": "done", "target": "running"},
             "queue.orphaned": {"id": 3},
             "net.non_local_host": {"host": "example.org"},
         }

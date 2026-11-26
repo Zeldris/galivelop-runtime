@@ -38,6 +38,18 @@ class LogTests(unittest.TestCase):
         for r in records:
             log.append(APP, "proj", r)
 
+    def test_env_reaches_the_data_dir(self):
+        app = "galivelop-voice"
+        rec = line(100)
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch.dict(os.environ, {"GVOICE_DATA_HOME": tmp}):
+                log.append(app, "p", rec, env="GVOICE_DATA_HOME")
+                self.assertTrue((Path(tmp) / "projects" / "p" / "log.jsonl").is_file())
+                self.assertEqual(log.log_path(app, "p", env="GVOICE_DATA_HOME"),
+                                 Path(tmp).resolve() / "projects" / "p" / "log.jsonl")
+                self.assertEqual(log.estimate(app, "p", "fake", "run", "0.6b-base", "Vulkan0",
+                                              env="GVOICE_DATA_HOME"), 100)
+
     def est(self, op="run", model="0.6b-base", device="Vulkan0"):
         return log.estimate(APP, "proj", "fake", op, model, device)
 

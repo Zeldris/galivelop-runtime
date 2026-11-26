@@ -1,7 +1,7 @@
 """Registro JSONL de cada operación del motor y estimación de duración.
 
 Copiado de gvoice@8a17618 (`gvoice/log.py`, a su vez de gimg@fa1076e); adaptado:
-- El nombre de la aplicación es el primer parámetro de `log_path`, `append` y `estimate` (carpeta de datos).
+- El nombre de la aplicación es el primer parámetro de `log_path`, `append` y `estimate` (carpeta de datos); `env` es la variable que la fija (por defecto `<APP>_DATA_HOME`).
 - Los campos `app.voice.*` pasan a `app.*` (`app.key`, `app.seed`, `app.device`, `app.engine_commit`,
   `app.engine_version`, `app.min_free_mb`, `app.peak_rss_mb`, `app.backend`, `app.command`) y `operation` es un
   parámetro obligatorio de `record_for`.
@@ -15,8 +15,8 @@ from datetime import datetime, timezone
 from . import fsutil, paths
 
 
-def log_path(app: str, project: str):
-    return paths.project_data_dir(app, project, "log.bad_project") / "log.jsonl"
+def log_path(app: str, project: str, env: str | None = None):
+    return paths.project_data_dir(app, project, "log.bad_project", env) / "log.jsonl"
 
 
 def _now() -> str:
@@ -63,9 +63,9 @@ def record_for(key: str, task: str, spec: dict, machine: dict, provider: str | N
     return {k: v for k, v in line.items() if v is not None}
 
 
-def append(app: str, project: str, record: dict) -> None:
+def append(app: str, project: str, record: dict, env: str | None = None) -> None:
     """Añade una línea JSON al registro del proyecto."""
-    path = log_path(app, project)
+    path = log_path(app, project, env)
     text = json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n"
     with fsutil.lock(path):
         with open(path, "a", encoding="utf-8") as fh:
@@ -88,11 +88,12 @@ def _lines(path):
                 yield line
 
 
-def estimate(app: str, project: str, provider: str, operation: str, model: str, device: str):
+def estimate(app: str, project: str, provider: str, operation: str, model: str, device: str,
+             env: str | None = None):
     """Mediana de ``app.duration_ms`` (ms) de las líneas sin error con el mismo proveedor, operación, modelo y
     dispositivo (el mismo modelo es más lento en la CPU que en Vulkan); ``None`` sin datos."""
     values = []
-    for line in _lines(log_path(app, project)):
+    for line in _lines(log_path(app, project, env)):
         duration = line.get("app.duration_ms")
         if ("app.error" in line or line.get("gen_ai.provider.name") != provider
                 or line.get("gen_ai.operation.name") != operation

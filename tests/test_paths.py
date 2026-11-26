@@ -86,6 +86,11 @@ class DataDirTests(unittest.TestCase):
                     self.assertEqual(cm.exception.code, "project.bad_name")
                     self.assertEqual(cm.exception.params["project"], str(bad))
 
+    def test_project_data_dir_env(self):
+        with env(GVOICE_DATA_HOME="/v"):
+            self.assertEqual(paths.project_data_dir("galivelop-voice", "x", env="GVOICE_DATA_HOME"),
+                             Path("/v/projects/x"))
+
     def test_project_data_dir_custom_code(self):
         with env(GALIVELOP_TEST_DATA_HOME="/d"):
             with self.assertRaises(GrunError) as cm:

@@ -102,9 +102,9 @@ def inside(root, rel) -> Path:
     return target
 
 
-def project_data_dir(app: str, name, code: str = "project.bad_name") -> Path:
+def project_data_dir(app: str, name, code: str = "project.bad_name", env: str | None = None) -> Path:
     """``<data de app>/projects/<name>``; `name` cumple el patrón de nombre (así ``.``, ``..`` y ``a/b`` no llegan a
-    otra carpeta). Si no, lanza GrunError `code`."""
+    otra carpeta). Si no, lanza GrunError `code`. `env` es la variable de la carpeta de datos (como en `data_dir`)."""
     if not isinstance(name, str) or not _NAME.fullmatch(name):
         raise GrunError(code, project=str(name))
-    return inside(data_dir(app), "projects/" + name)
+    return inside(data_dir(app, env), "projects/" + name)

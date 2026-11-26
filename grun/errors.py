@@ -2,8 +2,8 @@
 
 Copiado de gvoice@8a17618 (`gvoice/errors.py`); adaptado: `GvoiceError` pasa a `GrunError`, se quita el formato de
 errores del validador de esquemas (`errors=`, `schema.format_error`) porque `grun` no lleva esquemas, y se añade
-`CODES`, la lista de códigos con texto en `locales/` (D-14): los de gvoice que no son de voz con su nombre, más
-`queue.invalid_transition`, `queue.orphaned` y `net.non_local_host`."""
+`CODES`, la lista de códigos con texto en `locales/` (D-14): los de gvoice que no son de voz con su nombre, más los genéricos `engine.failed`, `engine.timeout`, `engine.low_memory`, `engine.unknown` y
+`engine.binary_missing`, más `queue.invalid_transition`, `queue.orphaned` y `net.non_local_host`."""
 from __future__ import annotations
 
 from . import i18n
@@ -16,6 +16,7 @@ CODES = (
     "machine_lock.unavailable",
     "queue.corrupt", "queue.unknown", "queue.not_cancellable", "queue.not_running", "queue.bad_state",
     "worker.already_running", "worker.unexpected",
+    "engine.failed", "engine.timeout", "engine.low_memory", "engine.unknown", "engine.binary_missing",
     # Nuevos (D-14)
     "queue.invalid_transition", "queue.orphaned", "net.non_local_host",
 )

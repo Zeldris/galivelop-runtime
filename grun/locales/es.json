@@ -21,7 +21,12 @@
   "error.queue.bad_state": "estado final no válido \"{state}\"; usa uno de: {states}",
   "error.worker.already_running": "ya hay un trabajador en marcha ({path})",
   "error.worker.unexpected": "error inesperado del trabajador: {message}",
-  "error.queue.invalid_transition": "la entrada {id} no puede pasar de {from} a {to}",
+  "error.queue.invalid_transition": "la entrada {id} no puede pasar de {source} a {target}",
   "error.queue.orphaned": "la entrada {id} estaba en marcha pero su trabajador ya no existe",
-  "error.net.non_local_host": "«{host}» no es una dirección local: solo se admiten 127.0.0.1, localhost o ::1"
+  "error.net.non_local_host": "«{host}» no es una dirección local: solo se admiten 127.0.0.1, localhost o ::1",
+  "error.engine.failed": "el motor falló: {message}",
+  "error.engine.timeout": "el motor superó el tope de tiempo",
+  "error.engine.low_memory": "la memoria libre bajó a {free} MB, por debajo de los {min} MB del perfil de máquina: se paró el motor",
+  "error.engine.unknown": "motor desconocido \"{engine}\"",
+  "error.engine.binary_missing": "el programa del motor {path} no está instalado (mira el script de instalación)"
 }

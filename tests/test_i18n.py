@@ -16,6 +16,13 @@ PACKAGE = Path(__file__).resolve().parent.parent / "grun"
 LOCALES = PACKAGE / "locales"
 NEW_CODES = ("queue.invalid_transition", "queue.orphaned", "net.non_local_host")  # D-14
 
+ENGINE_CODES = ("engine.failed", "engine.timeout", "engine.low_memory", "engine.unknown", "engine.binary_missing")
+# Códigos de gvoice que nombran voz, huellas, audio de referencia o tomas: no entran en `grun`.
+VOICE_CODES = ("key.too_long", "queue.no_production_model", "queue.model_not_printed", "worker.audio_move",
+               "worker.print_missing", "worker.take_without_audio", "engine.print_missing",
+               "engine.reference_unreadable", "engine.model_missing", "engine.no_reference_text",
+               "engine.bad_delay", "engine.bad_audio", "engine.print_not_written")
+
 
 def load(lang):
     with open(LOCALES / (lang + ".json"), encoding="utf-8") as fh:
@@ -52,9 +59,16 @@ class LocaleTests(unittest.TestCase):
                 "worker.already_running", "worker.unexpected"}
         self.assertLessEqual(kept, set(errors.CODES))
 
+    def test_the_generic_engine_codes_are_declared_with_text(self):
+        for code in ENGINE_CODES:
+            self.assertIn(code, errors.CODES)
+            for lang in ("es", "en"):
+                self.assertTrue(load(lang)["error." + code].strip(), (lang, code))
+
     def test_no_voice_codes(self):
         for code in errors.CODES:
-            self.assertFalse(code.startswith(("engine.", "order.", "sheet.", "models.", "cli.", "api.")), code)
+            self.assertFalse(code.startswith(("order.", "sheet.", "models.", "cli.", "api.")), code)
+            self.assertNotIn(code, VOICE_CODES)
 
     def test_codes_have_no_duplicates(self):
         self.assertEqual(len(errors.CODES), len(set(errors.CODES)))
@@ -69,7 +83,7 @@ class LocaleTests(unittest.TestCase):
 
     def test_all_messages_render_in_both_languages(self):
         params = {k: "X" for k in ("path", "reason", "free", "min", "model", "use", "allowed", "id", "state",
-                                   "states", "message", "project", "host", "from", "to")}
+                                   "states", "message", "project", "host", "engine", "source", "target")}
         for lang in ("es", "en"):
             for code in errors.CODES:
                 self.assertNotIn("{", i18n.t("error." + code, lang, **params), (lang, code))
