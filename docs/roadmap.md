@@ -26,11 +26,11 @@ uno usa los anteriores). El estado se marca con `python3 .claude/gw/scripts/road
 
 | Id | Paso | Estado |
 |---|---|---|
-| 0.1.1 | **Soporte:** rutas (D-1, con `GALIVELOP_STATE_HOME` y el alias `GVOICE_STATE_HOME`), límites, errores con i18n y los códigos de D-14, escritura atómica y registro | pendiente |
-| 0.1.2 | **Candado de máquina:** el `machine_lock` de gvoice, con su titular y `held_fds` | pendiente |
-| 0.1.3 | **Cola:** la de gvoice más lo general de gimg (D-6): lotes, `move`, pausa, progreso, vista previa, `held`; orden por posición y luego id (D-4); `<data>/queue.json` sin migrar (D-10); huérfanas con `orphanCount` (D-5) | pendiente |
-| 0.1.4 | **Worker:** interfaz `Engine.run` (D-9), desalojo de Ollama al tomar el candado (D-7) y espera de memoria cancelable dentro del candado (D-8), con `ProfileLoader` sobre `machine_profiles/` (D-12) | pendiente |
-| 0.1.5 | **`grun doctor`** (D-15) | pendiente |
+| GR-1 | **Soporte:** rutas (D-1, con `GALIVELOP_STATE_HOME` y el alias `GVOICE_STATE_HOME`), límites, errores con i18n y los códigos de D-14, escritura atómica y registro | pendiente |
+| GR-2 | **Candado de máquina:** el `machine_lock` de gvoice, con su titular y `held_fds` | pendiente |
+| GR-3 | **Cola:** la de gvoice más lo general de gimg (D-6): lotes, `move`, pausa, progreso, vista previa, `held`; orden por posición y luego id (D-4); `<data>/queue.json` sin migrar (D-10); huérfanas con `orphanCount` (D-5) | pendiente |
+| GR-4 | **Worker:** interfaz `Engine.run` (D-9), desalojo de Ollama al tomar el candado (D-7) y espera de memoria cancelable dentro del candado (D-8), con `ProfileLoader` sobre `machine_profiles/` (D-12) | pendiente |
+| GR-5 | **`grun doctor`** (D-15) | pendiente |
 
 El desalojo entra en `0.1`, no en `0.4`: gvoice retira su script en R3 (D-7) y necesita que `grun` ya lo haga.
 `0.4` solo añade el turno de Ollama para los procesos que no son Python.

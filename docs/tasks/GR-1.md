@@ -1,0 +1,51 @@
+# GR-1 · Soporte de grun: rutas, límites, errores, escritura atómica y registro
+
+## Goal
+
+Primer paso de `0.1` (R1, [roadmap](../roadmap.md)): las piezas de soporte que usan el candado, la cola y el worker
+(GR-2..GR-4), sacadas de gvoice (`galivelop-voice-generator@8a17618`, `gvoice/`) al paquete `grun/`.
+
+## Scope
+
+- `grun/paths.py` desde `gvoice/paths.py`: solo lo general (estado de la marca y `gpu.lock`, datos de la aplicación).
+  D-1: `$GALIVELOP_STATE_HOME`, alias `$GVOICE_STATE_HOME` (gana la nueva si están las dos) hasta R3, luego
+  `$XDG_STATE_HOME/galivelop`, luego `~/.local/state/galivelop`, con la regla de Flatpak de gvoice tal cual. Las rutas
+  de la aplicación se parametrizan por nombre de aplicación (gvoice no se nombra en el código salvo en el alias).
+- `grun/limits.py` desde `gvoice/limits.py`: lo que no es propio de voz.
+- `grun/errors.py` + `grun/i18n.py` + `grun/locales/{es,en}.json` desde gvoice. D-14: se conservan los códigos de
+  gvoice con su nombre y se añaden `queue.invalid_transition`, `queue.orphaned`, `net.non_local_host`. Los códigos
+  propios de voz se quedan fuera. Los de gimg entran cuando los pida la cola (GR-3).
+- `grun/fsutil.py` desde `gvoice/fsutil.py`: escritura atómica (`mkstemp` en el mismo directorio, `fsync`,
+  `os.replace`).
+- `grun/log.py` desde `gvoice/log.py`: registro, con el nombre de la aplicación como parámetro.
+- Cada módulo copiado lleva en su docstring «Copiado de gvoice@8a17618» y qué se adaptó.
+- Fuera: `machine_lock` (GR-2), cola (GR-3), worker y motor (GR-4), servidor (R4).
+
+## Acceptance
+
+- [ ] Invariante 6 (parcial): tabla de entornos (con y sin `XDG_STATE_HOME`, dentro y fuera de Flatpak, con
+      `GALIVELOP_STATE_HOME`, con `GVOICE_STATE_HOME`, con las dos) y la ruta de `gpu.lock` esperada en cada fila,
+      la misma que da `gvoice/paths.py`.
+- [ ] Invariante 10 (parte de escritura): fallo inyectado entre la escritura y el `replace` deja el archivo anterior
+      legible y sin temporales.
+- [ ] Invariante 12: test que recorre los `import` de `grun/` contra `sys.stdlib_module_names` (con lista propia si
+      Python < 3.10).
+- [ ] Los tres códigos nuevos y todos los conservados tienen texto en `es` y `en`; test que compara las claves de los
+      dos `locales` con los códigos de `errors.py`.
+- [ ] Los tests de gvoice que cubren estos módulos, adaptados, en `tests/`.
+- [ ] Check en verde.
+
+## Files
+
+`grun/__init__.py`, `grun/paths.py`, `grun/limits.py`, `grun/errors.py`, `grun/i18n.py`, `grun/locales/`,
+`grun/fsutil.py`, `grun/log.py`, `tests/test_*.py`.
+
+## Change log
+
+—
+
+## Verification
+
+—
+
+Preguntas abiertas: van a [docs/questions.md](../questions.md), no aquí.

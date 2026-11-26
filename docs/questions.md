@@ -202,8 +202,10 @@ file (format: header of scripts/questions.py). Answer by number: `questions.py a
 - Answered: 2026-11-26
 
 ## Q-23
-- Refs: 0.1.1
-- Status: open
+- Refs: GR-1
+- Status: answered
 - Asked: 2026-11-26
-- Question: ¿Cómo leo el código de gvoice (galivelop-voice-generator) para extraer el soporte de 0.1.1? a) autorizas add_repo en lectura; b) clono el repo público con git clone en una carpeta temporal, solo lectura; c) me pasas tú los archivos.
+- Question: ¿Cómo leo el código de gvoice (galivelop-voice-generator) para extraer el soporte de GR-1? a) autorizas add_repo en lectura; b) clono el repo público con git clone en una carpeta temporal, solo lectura; c) me pasas tú los archivos.
 - Recommendation: a) Autorizar add_repo de Zeldris/galivelop-voice-generator en modo lectura (permiso del modo automático o aprobándolo cuando lo vuelva a pedir); un subagente lee el soporte y yo extraigo a grun/.
+- Answer: a
+- Answered: 2026-11-26
