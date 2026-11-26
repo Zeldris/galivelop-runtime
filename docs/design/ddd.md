@@ -1,8 +1,8 @@
 # DDD: galivelop-runtime (borrador 2, 2026-11-26)
 
 > Borrador 2 (F-1): corregido y ampliado tras comprobarlo contra gimg, gvoice, gart, gmod, forge y WMF. Lo
-> comprobado, con sus rutas, está en [estado-actual.md](estado-actual.md). Las preguntas de §8 se responden en
-> [`docs/questions.md`](../questions.md) y, una vez respondidas, pasan a «Decisiones».
+> comprobado, con sus rutas, está en [estado-actual.md](estado-actual.md). Las preguntas de §8 están respondidas
+> (todas con su recomendación) y recogidas en «Decisiones» (D-1..D-17).
 
 **Uso:** núcleo común de ejecución local para los generadores de Galivelop. Recoge lo que hoy está duplicado entre
 gimg y gvoice. gvoice copió de gimg su núcleo genérico con la marca «Copiado de gimg@<sha>» (decisión D7 de gvoice),
@@ -316,4 +316,22 @@ Cada una lleva su recomendación. Se responden por número en [`docs/questions.m
 
 ## Decisiones
 
-- _(ninguna aún: pendientes de §8, en [`docs/questions.md`](../questions.md))_
+Tomadas el 2026-11-26 (F-1): la persona acepta las 17 recomendaciones de §8 (Q-1..Q-17 en [`docs/questions.md`](../questions.md)). D-n responde a P-n.
+
+- **D-1.** Ruta del `gpu.lock`: la de gvoice tal cual (`$XDG_STATE_HOME/galivelop/gpu.lock`, o `~/.local/state/galivelop/gpu.lock`, con su regla de Flatpak). Variable de cambio `GALIVELOP_STATE_HOME`, con `GVOICE_STATE_HOME` como alias hasta R3.
+- **D-2.** La base del servidor local entra en `grun` desde R4 (localhost, comprobación de `Host`, tabla error→HTTP, `health` y rutas de cola). Las pantallas se quedan en cada aplicación.
+- **D-3.** WMF y GVE pasan por el candado lanzando `flock(1)` como proceso hijo dentro de su cola de Ollama, con un tope igual a `queueTimeoutMs`. Sin demonio.
+- **D-4.** Sin prioridades en R1: orden por posición y luego id; entre aplicaciones, el primero que llega. Las prioridades, a pendiente (forge).
+- **D-5.** Huérfanas: vuelven a la cola, con un contador `orphanCount`; a la segunda se cierran como `failed` con `queue.orphaned`.
+- **D-6.** La cola de `grun` parte de la de gvoice, más lo general de gimg (lotes, `move`, pausa, progreso, vista previa, `held`). Lo solo de imagen, por ganchos o en gimg.
+- **D-7.** El desalojo de Ollama pasa a `grun`: el titular que no es Ollama descarga sus modelos (`keep_alive: 0`) al tomar el candado. La guarda de gimg queda como configuración, con `unload` por defecto; el script de gvoice se retira en R3.
+- **D-8.** La espera de memoria va dentro del candado, después del desalojo, y es cancelable (`WaitCancelled`), con `minFreeMemoryMb` del perfil.
+- **D-9.** Interfaz del motor: `Engine.run(job, on_progress, should_cancel, pass_fds) -> Result`; las operaciones de gvoice pasan a tipos de trabajo.
+- **D-10.** La cola se queda en `<data>/queue.json`, sin migrar.
+- **D-11.** El lanzador de gimg (`maybe_launch`) entra en `grun` como pieza opcional; gimg lo usa desde R4 y gvoice decide.
+- **D-12.** `grun` no espera a gart ni a gmod: esquemas JSON propios validados por sus tests y un `ProfileLoader` sobre los `machine_profiles/` de cada aplicación.
+- **D-13.** `grun.lock/1` en R5 y `grun.run/1` en R6; `grun.queue` se queda en `/0`.
+- **D-14.** Se conservan los códigos de error existentes con su nombre, con sus textos en los `locales` de `grun`. Nuevos: `queue.invalid_transition`, `queue.orphaned`, `net.non_local_host`.
+- **D-15.** `grun doctor` cubre candado, cola, huérfanas y candados de aplicación; `gimg doctor` lo llama.
+- **D-16.** `grun.trace/0` queda fuera de R1-R4; se decide con GVE en R6 (a pendiente).
+- **D-17.** R2 se adelanta a R1: gimg copia `machine_lock.py` de gvoice («Copiado de gvoice@<sha>», que desaparece en R4) y pasa `held_fds` a sd.cpp.
