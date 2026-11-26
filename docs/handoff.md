@@ -11,7 +11,7 @@
 | **Rama** | `ccr-efbc000f-ebqwiq` |
 | **Fase / tarea** | `0.1` (R1), paso `0.1.1` (soporte), en la rama de la sesión (ya contiene `main`). `roadmap: true` activado con `docs/roadmap.md` (P3 hecho). Presupuesto de compactaciones: 1 (llevamos 0). |
 | **Último punto estable** | `roadmap: true` y tabla de pasos de `0.1` en el formato de `roadmap.py`. Sin código aún. |
-| **Siguiente paso** | `0.1.1`: leer el soporte de gvoice (`gvoice/paths.py` y lo de límites, errores, escritura atómica y registro) y extraerlo a `grun/` con TDD. Bloqueado: la sesión no pudo añadir `galivelop-voice-generator` (lo frenó el modo automático); la persona decide cómo leerlo. R2 se hace en una sesión de gimg, no desde aquí (D-17). |
+| **Siguiente paso** | `0.1.1`: leer el soporte de gvoice (`gvoice/paths.py` y lo de límites, errores, escritura atómica y registro) y extraerlo a `grun/` con TDD. Bloqueado: la sesión no pudo añadir `galivelop-voice-generator` (lo frenó el modo automático); la persona decide cómo leerlo (Q-23 en `docs/questions.md`). R2 se hace en una sesión de gimg, no desde aquí (D-17). |
 | **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde. Por ahora solo `tests/test_ddd.py`, un test de marcador; los tests de invariantes llegan con R1. |
 
 ## Para la próxima publicación
