@@ -23,17 +23,17 @@ Primer paso de `0.1` (R1, [roadmap](../roadmap.md)): las piezas de soporte que u
 
 ## Acceptance
 
-- [ ] Invariante 6 (parcial): tabla de entornos (con y sin `XDG_STATE_HOME`, dentro y fuera de Flatpak, con
+- [x] Invariante 6 (parcial): tabla de entornos (con y sin `XDG_STATE_HOME`, dentro y fuera de Flatpak, con
       `GALIVELOP_STATE_HOME`, con `GVOICE_STATE_HOME`, con las dos) y la ruta de `gpu.lock` esperada en cada fila,
       la misma que da `gvoice/paths.py`.
-- [ ] Invariante 10 (parte de escritura): fallo inyectado entre la escritura y el `replace` deja el archivo anterior
+- [x] Invariante 10 (parte de escritura): fallo inyectado entre la escritura y el `replace` deja el archivo anterior
       legible y sin temporales.
-- [ ] Invariante 12: test que recorre los `import` de `grun/` contra `sys.stdlib_module_names` (con lista propia si
+- [x] Invariante 12: test que recorre los `import` de `grun/` contra `sys.stdlib_module_names` (con lista propia si
       Python < 3.10).
-- [ ] Los tres códigos nuevos y todos los conservados tienen texto en `es` y `en`; test que compara las claves de los
+- [x] Los tres códigos nuevos y todos los conservados tienen texto en `es` y `en`; test que compara las claves de los
       dos `locales` con los códigos de `errors.py`.
-- [ ] Los tests de gvoice que cubren estos módulos, adaptados, en `tests/`.
-- [ ] Check en verde.
+- [x] Los tests de gvoice que cubren estos módulos, adaptados, en `tests/`.
+- [x] Check en verde.
 
 ## Files
 
@@ -42,10 +42,25 @@ Primer paso de `0.1` (R1, [roadmap](../roadmap.md)): las piezas de soporte que u
 
 ## Change log
 
-—
+- `grun/` nuevo (solo stdlib, Python >= 3.10 según el DDD): `paths`, `limits`, `errors`, `i18n`, `fsutil`, `log` y
+  `locales/{es,en}.json`, cada uno con «Copiado de gvoice@8a17618» y lo adaptado en su docstring.
+- `paths`: `state_dir` con `GALIVELOP_STATE_HOME` (alias `GVOICE_STATE_HOME`), `machine_lock_path`, `data_dir(app)`,
+  `project_data_dir(app, name)`, `inside`/`check_relative`. Fuera: `config_dir`, `models_dir`, `engine_dir`, claves.
+- `limits`: `LimitError`, memoria, modelos por uso, lectura de `/proc` (`GALIVELOP_MEMINFO`, `GALIVELOP_PROC_STATUS`).
+  Fuera: `load_machine` y los perfiles.
+- `errors`: `GrunError` (sin el formato de errores de esquema) y `CODES`: los de gvoice no propios de voz
+  (`path.*`, `project.bad_name`, `log.bad_project`, `limit.*`, `machine_lock.unavailable`, `queue.{corrupt,unknown,
+  not_cancellable,not_running,bad_state}`, `worker.{already_running,unexpected}`) más `queue.invalid_transition`,
+  `queue.orphaned`, `net.non_local_host`.
+- `i18n`: `GALIVELOP_LANG`. `log`: nombre de aplicación como parámetro, campos `app.*` sin `voice`.
+- Tests: `tests/test_{paths,fsutil,stdlib_only,i18n,errors,limits,log}.py`.
 
 ## Verification
 
-—
+- `python3 -m unittest discover -s tests`: 75 tests en verde (vistos en rojo antes de escribir `grun/`).
+- Invariante 6: las filas de la tabla sin variable nueva se comprobaron contra `gvoice/paths.py` de
+  gvoice@8a17618 con el mismo entorno (todas coinciden); las de `GALIVELOP_STATE_HOME` las fija D-1.
+- `python3 .claude/gw/scripts/tests-after-main.py` y `python3 .claude/gw/scripts/ci-local.py --validate`: en verde
+  (`actionlint` no instalado, solo aviso).
 
 Preguntas abiertas: van a [docs/questions.md](../questions.md), no aquí.
