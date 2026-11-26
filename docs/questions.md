@@ -155,3 +155,38 @@ file (format: header of scripts/questions.py). Answer by number: `questions.py a
 - Recommendation: Sí: en gimg, con una copia de machine_lock.py de gvoice marcada «Copiado de gvoice@<sha>», que desaparece en R4
 - Answer: ok (recomendación)
 - Answered: 2026-11-26
+
+## Q-18
+- Refs: F0
+- Status: open
+- Asked: 2026-11-26
+- Question: ¿Apagas el conector Claude_Docs, que este proyecto no usa? (retro P1)
+- Recommendation: Sí: lo apagas tú en el entorno; /context dice cuánto pesa
+
+## Q-19
+- Refs: F0
+- Status: open
+- Asked: 2026-11-26
+- Question: ¿Apunto la referencia medida en .claude/gw/gw-opt-tokens.md? (retro P2)
+- Recommendation: Sí
+
+## Q-20
+- Refs: F0
+- Status: open
+- Asked: 2026-11-26
+- Question: ¿Activo roadmap: true con docs/roadmap.md para que R1 use roadmap.py? (retro P3)
+- Recommendation: Sí, al empezar 0.1
+
+## Q-21
+- Refs: F0
+- Status: open
+- Asked: 2026-11-26
+- Question: ¿Añado ci-local.py --validate al check que lista AGENTS.md? (retro P4)
+- Recommendation: Sí, una línea en este PR
+
+## Q-22
+- Refs: F0
+- Status: open
+- Asked: 2026-11-26
+- Question: ¿Te vale el reparto en versiones de docs/roadmap.md (R2 en gimg antes de 0.1; 0.1=R1 en 5 pasos; 0.2-0.5=R3-R6; 1.0 lo decides tú)?
+- Recommendation: Sí
