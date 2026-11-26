@@ -9,17 +9,18 @@
 | Campo | Valor |
 |---|---|
 | **Rama** | `ccr-efbc000f-ebqwiq` |
-| **Fase / tarea** | F0: llevar lo decidido en F-1 a `main` (PR) y repartirlo en versiones. F-1 cerrada el 2026-11-26. |
-| **Último punto estable** | F0: R0-R6 repartidos en versiones en [`docs/roadmap.md`](roadmap.md) (R2 en gimg antes de `0.1`; `0.1`=R1 en 5 pasos … `0.5`=R6; `1.0` lo decide la persona). |
-| **Siguiente paso** | F0: `reviewed.sh`, descripción del PR con la skill `pr` y PR a `main` cuando la persona lo confirme. Retro F0 decidida (Q-18..Q-22). |
+| **Fase / tarea** | F0 cerrada el 2026-11-26: PR #1 fusionada en `main` (`3dcba99`) con confirmación de la persona y CI en verde. Siguiente versión: `0.1` (R1). |
+| **Último punto estable** | `main` en `3dcba99`: DDD D-1..D-17, `docs/roadmap.md`, retro F0 decidida, flujo v0.9.1. |
+| **Siguiente paso** | `0.1`, paso 1 (soporte: rutas D-1, límites, errores D-14, escritura atómica, registro), en una rama nueva desde `main`. Antes: activar `roadmap: true` con `docs/roadmap.md` (pendiente P3). R2 se hace en una sesión de gimg, no desde aquí (D-17). |
 | **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde. Por ahora solo `tests/test_ddd.py`, un test de marcador; los tests de invariantes llegan con R1. |
 
 ## Para la próxima publicación
 
-Flujo + DDD revisado, en F0 (PR a `main`), cuando F-1 cierre §8.
+`0.1` (R1): el paquete `grun` con los tests de las invariantes 1-12.
 
 ## Hecho (5 últimas)
 
+0. 2026-11-26 — F0 cerrada: PR #1 a `main` (`3dcba99`), CI en verde; retro F0 decidida (Q-18..Q-22).
 1. 2026-11-26 — F0: roadmap de versiones (`docs/roadmap.md`), enlazado desde §7 del DDD.
 2. 2026-11-26 — F-1 cerrada: las 17 preguntas de §8 respondidas (todas con la recomendación) y pasadas a «Decisiones» del DDD (D-1..D-17).
 3. 2026-11-26: DDD borrador 2 (F-1): corregido contra los repos vecinos (ruta del `gpu.lock`, cola en `<data>`, sin prioridades, desalojo de Ollama), ampliado (archivos de candado, interfaces, invariantes 1-14) y §8 en 17 preguntas.
