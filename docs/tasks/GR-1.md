@@ -55,6 +55,11 @@ Primer paso de `0.1` (R1, [roadmap](../roadmap.md)): las piezas de soporte que u
 - `i18n`: `GALIVELOP_LANG`. `log`: nombre de aplicación como parámetro, campos `app.*` sin `voice`.
 - Tests: `tests/test_{paths,fsutil,stdlib_only,i18n,errors,limits,log}.py`.
 
+Decisiones del worker aceptadas en la sesión (2026-11-26): variables `GALIVELOP_*` sin alias de gvoice salvo el de
+estado; `load_machine` y perfiles fuera (llegan con `ProfileLoader`, GR-4, D-12); formato de registro `app.*`;
+los códigos `queue.*`, `worker.*` y `machine_lock.unavailable` de gvoice ya en `CODES` (D-14); sin `config_dir`
+hasta que lo pida GR-2..GR-4. Los dos efectos sobre gvoice, a pendiente para R3.
+
 ## Verification
 
 - `python3 -m unittest discover -s tests`: 75 tests en verde (vistos en rojo antes de escribir `grun/`).
