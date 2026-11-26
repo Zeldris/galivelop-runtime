@@ -11,7 +11,7 @@
 | **Rama** | `ccr-efbc000f-ebqwiq` |
 | **Fase / tarea** | F0: llevar lo decidido en F-1 a `main` (PR) y repartirlo en versiones. F-1 cerrada el 2026-11-26. |
 | **Último punto estable** | F0: R0-R6 repartidos en versiones en [`docs/roadmap.md`](roadmap.md) (R2 en gimg antes de `0.1`; `0.1`=R1 en 5 pasos … `0.5`=R6; `1.0` lo decide la persona). |
-| **Siguiente paso** | F0: revisión de código hecha (0 hallazgos graves o medios); siguen `gw-opt-tokens` + `retro` presentadas a la persona, `reviewed.sh` y PR a `main` con la skill `pr` (solo con confirmación). |
+| **Siguiente paso** | F0: revisión hecha (0 graves o medios); retro `docs/records/retro-2026-11-26-f0-roadmap.md` presentada, falta la decisión de la persona (P1-P4); luego `reviewed.sh` y PR a `main` con la skill `pr` (solo con confirmación). |
 | **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde. Por ahora solo `tests/test_ddd.py`, un test de marcador; los tests de invariantes llegan con R1. |
 
 ## Para la próxima publicación
