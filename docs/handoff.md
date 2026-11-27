@@ -9,9 +9,9 @@
 | Campo | Valor |
 |---|---|
 | **Rama** | `ccr-2447cc83-5kxr8j` |
-| **Fase / tarea** | `0.1` (R1) y `0.2` (R3) fusionadas en `main` (PR #4, `e1277d7`). `0.3` (R4) repartida en R4.1-R4.4 (`docs/roadmap.md`): R4.1 y R4.2 hechas y revisadas (2 medios arreglados, leves en `pending.md`); R4.3 y R4.4 hechas y revisadas (bloque sin hallazgos graves ni medios; 5 leves en `pending.md`). Presupuesto de compactaciones: 1 |
+| **Fase / tarea** | `0.1`, `0.2` y `0.3` (R4.1-R4.4) fusionadas en `main` (PR #5, `d6decec`, CI en verde). Retro de `0.3` decidida (P4 aplicada; P1 anotada para `0.4`). |
 | **Último punto estable** | R4.4: invariante 13, esquema `schemas/grun.queue.0.json` y ejemplos de `/api/queue` (`docs/tasks/R4.4.md`), sobre R4.3 (lanzador). |
-| **Siguiente paso** | Retro decidida y aplicada (P4; P1 anotada; P3 al workflow; P2 aplazada). Fase 3: `bash .claude/gw/scripts/check.sh`, `reviewed.sh`, push y PR a `main` con la skill `pr`; mirar el CI con `ci-status.py` y fusionar solo en verde. |
+| **Siguiente paso** | Empezar `0.4`: barrido de leves de `queue.py` (`pending.md`, la persona elige cuáles) y, según `docs/roadmap.md`, la siguiente tarea. gimg sin `machine_lock.py` y D-7 en gvoice siguen pendientes de la persona. |
 | **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (385 tests). |
 
 ## Autoría
