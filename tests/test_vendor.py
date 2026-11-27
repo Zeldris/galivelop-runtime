@@ -107,6 +107,20 @@ class VendorTests(unittest.TestCase):
         self.assertEqual(keep.read_text(), "keep\n")
         self.assertEqual([p.name for p in target.iterdir()], ["mine.py"])
 
+    def test_it_never_deletes_the_package_that_is_running(self):
+        # A copy exported into `self.dest` is vendored (has a manifest) and, run from there, is its own source.
+        self.export()
+        copy = self.dest / "grun"
+        before = vendor.collect(copy)
+        code = ("import sys; from grun import vendor; "
+                "from grun.errors import GrunError\n"
+                "try: vendor.export(%r)\nexcept GrunError as e: print(e.code); sys.exit(0)\n"
+                "sys.exit(1)" % str(self.dest))
+        out = subprocess.run([sys.executable, "-c", code], cwd=self.dest, capture_output=True, text=True)
+        self.assertEqual((out.returncode, out.stdout.strip()), (0, "vendor.is_source"), out.stderr)
+        self.assertEqual(vendor.collect(copy), before)
+        self.assertEqual(vendor.verify(copy), [])
+
     def test_the_vendored_copy_runs_on_its_own(self):
         self.export()
         out = subprocess.run([sys.executable, "-c", "import grun, grun.vendor; print(grun.__version__)"],
@@ -146,6 +160,13 @@ class VendorCliTests(unittest.TestCase):
         code, _, err = self.run_cli("--dest", str(self.dest))
         self.assertEqual(code, 1)
         self.assertIn("not a vendored grun copy", err)
+
+    def test_dest_that_is_a_file_exits_1_with_a_message_not_a_traceback(self):
+        f = self.dest / "afile"
+        f.write_text("x")
+        code, _, err = self.run_cli("--dest", str(f))
+        self.assertEqual(code, 1)
+        self.assertIn("grun vendor:", err)
 
     def test_bad_usage_exits_2(self):
         self.assertEqual(self.run_cli()[0], 2)

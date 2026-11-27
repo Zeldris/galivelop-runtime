@@ -9,10 +9,10 @@
 | Campo | Valor |
 |---|---|
 | **Rama** | `ccr-2447cc83-5kxr8j` |
-| **Fase / tarea** | `0.2` (R3): R3.1 hecho, sin revisar. `0.1` (R1) completo y revisado. Presupuesto de compactaciones: 0 |
+| **Fase / tarea** | `0.2` (R3): R3.1 hecho y revisado (1 medio arreglado, leves en pendientes). `0.1` (R1) completo y revisado. Presupuesto de compactaciones: 0 |
 | **Último punto estable** | este commit: `grun vendor` (R3.1). Antes, `1fc3c8a` (CI verde). |
-| **Siguiente paso** | Revisión de bloque de R3.1; R3.2 (alias) espera a gvoice, que es otro repo: preguntar a la persona si lo hace ella o abre sesión allí. Antes de `main` (`0.1`+`0.2`), las fases 2 y 3 y la etiqueta `v0.1.0`. |
-| **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (292 tests). |
+| **Siguiente paso** | Fase 2 (gw-opt-tokens y retro, se presentan a la persona) y fase 3 para `0.1`+R3.1. R3.2 (alias) espera a la sesión de gvoice (`session_01VdeHm9ESLr7pEB8izbfdt1`). Antes de `main` (`0.1`+`0.2`), las fases 2 y 3 y la etiqueta `v0.1.0`. |
+| **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (294 tests). |
 
 ## Autoría
 

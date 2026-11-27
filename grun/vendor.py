@@ -64,8 +64,12 @@ def export(dest: Path, *, source: str | None = None) -> dict:
     """Copy the package to ``<dest>/grun`` and write its manifest; returns the manifest.
 
     An existing ``<dest>/grun`` is replaced only when it is itself a vendored copy (it holds a manifest); anything else
-    raises ``vendor.not_vendored`` and nothing is touched."""
+    raises ``vendor.not_vendored``; the running package itself (or a folder that holds it or sits inside it) raises
+    ``vendor.is_source``. Either way nothing is touched."""
     target = Path(dest) / "grun"
+    resolved = target.resolve()
+    if resolved == PACKAGE or resolved in PACKAGE.parents or PACKAGE in resolved.parents:
+        raise VendorError("vendor.is_source", path=str(target))
     if target.exists():
         if not (target / MANIFEST).is_file():
             raise VendorError("vendor.not_vendored", path=str(target))
@@ -148,6 +152,9 @@ def run(args) -> int:
             manifest = export(Path(args.dest))
         except GrunError as exc:
             print(exc.message(), file=sys.stderr)
+            return 1
+        except OSError as exc:
+            print("grun vendor: %s" % exc, file=sys.stderr)
             return 1
         print(json.dumps(manifest, indent=2, sort_keys=True) if args.json
               else "grun %s vendored to %s/grun (fingerprint %s)" % (manifest["version"], args.dest,

@@ -54,6 +54,7 @@
   "error.queue.not_running": "la entrada {id} no está en marcha (estado: {state})",
   "error.queue.orphaned": "la entrada {id} se quedó en marcha de un worker que murió {count} veces; se cerró como fallida",
   "error.queue.unknown": "no hay ninguna entrada {id} en la cola",
+  "error.vendor.is_source": "{path} es el grun que se está ejecutando (o lo contiene): vendoriza desde otra copia a otra carpeta; no se ha tocado nada",
   "error.vendor.not_vendored": "{path} existe y no es una copia vendorizada de grun (no tiene VENDOR.json): no se ha tocado nada",
   "error.worker.already_running": "ya hay un trabajador en marcha ({path})",
   "error.worker.unexpected": "error inesperado del trabajador: {message}",
