@@ -10,8 +10,8 @@
 |---|---|
 | **Rama** | `ccr-2447cc83-5kxr8j` |
 | **Fase / tarea** | `0.1`, `0.2` y `0.3` (R4.1-R4.4) fusionadas en `main` (PR #5, `d6decec`, CI en verde). Retro de `0.3` decidida (P4 aplicada; P1 anotada para `0.4`). |
-| **Último punto estable** | R4.4: invariante 13, esquema `schemas/grun.queue.0.json` y ejemplos de `/api/queue` (`docs/tasks/R4.4.md`), sobre R4.3 (lanzador). |
-| **Siguiente paso** | `0.4` en curso: Q-23 a Q-25 respondidas (sí a los 6 leves de `queue.py`, sí a `machine_lock.py`/`fsutil.py` en segundo commit, sí a seguir con R5); un `gw-worker` barre los leves; después, revisar sus commits y empezar R5 (protocolo `grun.lock/1`); barrido de leves de `queue.py` (`pending.md`, la persona elige cuáles) y, según `docs/roadmap.md`, la siguiente tarea. gimg sin `machine_lock.py` y D-7 en gvoice siguen pendientes de la persona. |
+| **Último punto estable** | 0.4 (1/2): leves de `queue.py` barridos (`stop_batch` int, generadores en `enqueue`, `etaS` inf, poda por fin, `checks` con `""`). Antes, R4.4: invariante 13, esquema `schemas/grun.queue.0.json` y ejemplos de `/api/queue` (`docs/tasks/R4.4.md`), sobre R4.3 (lanzador). |
+| **Siguiente paso** | `0.4` commit 2: leves de `machine_lock.py` (`busy`, `hold` reentrante) y `fsutil.held`; después, según `docs/roadmap.md`, la siguiente tarea. gimg sin `machine_lock.py` y D-7 en gvoice siguen pendientes de la persona. |
 | **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (385 tests). |
 
 ## Autoría

@@ -60,6 +60,22 @@ class QueueBase(unittest.TestCase):
         return proc
 
 
+class StopBatchTypeTests(QueueBase):
+    def test_true_is_not_batch_one(self):
+        self.add(2)
+        self.assertEqual(self.q.stop_batch(True, "x"), [])
+        self.assertEqual(self.ids(["queued"]), [1, 2])
+        self.assertEqual(len(self.q.stop_batch(1, "x")), 2)
+
+    def test_infinite_eta_is_refused(self):
+        self.add(1)
+        entry = self.q.claim()
+        for eta in (float("inf"), float("nan")):
+            self.assertEqual(self.code(self.q.set_progress, entry["id"], {"step": 0, "steps": 1, "etaS": eta}),
+                             "queue.bad_progress")
+        self.assertNotIn("Infinity", paths.queue_path(self.data).read_text(encoding="utf-8"))
+
+
 class OrderTests(QueueBase):  # invariant 7
     def test_enqueue_fields(self):
         entry = self.add()[0]
@@ -560,6 +576,27 @@ class HooksTests(QueueBase):
         self.assertEqual(self.ids(), [])
         self.assertEqual(len(self.q.enqueue([{"prompt": "a"}])), 1)
 
+    def test_checks_empty_reason_is_a_reason(self):
+        self.q = queue.Queue(self.data, checks=lambda i: "")
+        with self.assertRaises(GrunError) as cm:
+            self.q.enqueue([{"a": 1}])
+        self.assertEqual(cm.exception.code, "queue.bad_item")
+        self.assertEqual(cm.exception.params["reason"], "")
+        self.assertEqual(self.ids(), [])
+
+    def test_enqueue_takes_a_generator_and_reads_it_once(self):
+        seen = []
+
+        def gen():
+            for i in range(3):
+                seen.append(i)
+                yield {"n": i}
+        added = self.q.enqueue(gen())
+        self.assertEqual([e["n"] for e in added], [0, 1, 2])
+        self.assertEqual(seen, [0, 1, 2])
+        self.assertEqual(len(self.ids()), 3)
+        self.assertEqual(added[0]["batch"]["size"], 3)
+
     def test_checks_own_error_goes_up_as_is(self):
         def checks(item):
             raise GrunError("queue.unknown", id=7)
@@ -588,6 +625,18 @@ class HooksTests(QueueBase):
 
 
 class PruneTests(QueueBase):
+    def test_prunes_by_finish_order_not_arrival(self):
+        self.q = queue.Queue(self.data, keep_terminal=2)
+        base = {"state": "done", "pid": None, "startedAt": None, "error": None, "attemptId": None,
+                "cancelRequested": False, "orphanCount": 0, "enqueuedAt": "2026-01-01T00:00:00Z"}
+        # arrival order 1, 2, 3; finish order 3, 1, 2: 3 finished first, so it is the one to go
+        entries = [dict(base, id=1, position=1, finishedAt="2026-01-01T00:00:20Z"),
+                   dict(base, id=2, position=2, finishedAt="2026-01-01T00:00:30Z"),
+                   dict(base, id=3, position=3, finishedAt="2026-01-01T00:00:10Z")]
+        self.write_raw({"nextId": 4, "entries": entries})
+        self.assertEqual(self.ids(), [1, 2])
+
+
     def test_keeps_the_last_terminal(self):
         self.q = queue.Queue(self.data, keep_terminal=2)
         self.add(5, batch=False)

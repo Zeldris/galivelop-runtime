@@ -90,6 +90,13 @@ def _pos(entry: dict):
     return (pos if isinstance(pos, (int, float)) and not isinstance(pos, bool) else entry["id"], entry["id"])
 
 
+def _finished(entry: dict) -> str:
+    """Sort key of a finished entry: when it finished (an older file without a valid ``finishedAt`` goes first);
+    the sort is stable, so entries finished in the same second keep their arrival order."""
+    at = entry.get("finishedAt")
+    return at if isinstance(at, str) else ""
+
+
 def _slots(line: list) -> list:
     """The positions a reordered `line` is dealt: its own when strictly increasing, else distinct ones from the
     lowest (repeated positions would let the id tie-break undo a move)."""
@@ -252,7 +259,7 @@ class Queue:
                 else:
                     _transition(entry, "queued", via="recovery")
             recovered.append(entry)
-        done = [e for e in data["entries"] if e["state"] in TERMINAL]
+        done = sorted((e for e in data["entries"] if e["state"] in TERMINAL), key=_finished)  # oldest finish first
         if len(done) > self.keep_terminal:
             drop = {e["id"] for e in done[:len(done) - self.keep_terminal]}
             data["entries"] = [e for e in data["entries"] if e["id"] not in drop]
@@ -303,7 +310,9 @@ class Queue:
         """Queue one entry per item (a dict with the application's fields, deep-copied); returns the new entries.
 
         A batch (``batch`` in each entry) if `batch` is True, or None and there is more than one item; ``False``
-        never. An item that is not a dict or carries a key of `CORE_KEYS` is ``queue.bad_item`` and nothing is queued."""
+        never. An item that is not a dict or carries a key of `CORE_KEYS` is ``queue.bad_item`` and nothing is queued.
+        `items` is read once (any iterable, a generator included)."""
+        items = list(items)
         for index, item in enumerate(items):
             if not isinstance(item, dict):
                 raise GrunError("queue.bad_item", index=index, reason="is not an object")
@@ -311,7 +320,7 @@ class Queue:
             if clash:
                 raise GrunError("queue.bad_item", index=index, reason="uses the reserved field " + ", ".join(clash))
             reason = None if self._checks is None else self._checks(copy.deepcopy(item))
-            if reason:
+            if reason is not None:  # "" is a reason too: only None means valid
                 raise GrunError("queue.bad_item", index=index, reason=str(reason))
         now = _now()
 
@@ -402,10 +411,11 @@ class Queue:
 
     def stop_batch(self, batch_id, by) -> list:
         """The batch is good enough: cancel its ``queued`` entries (the running and finished ones stay) and record
-        ``stoppedBy`` = `by` in each. Returns the entries cancelled (none if the batch is unknown)."""
+        ``stoppedBy`` = `by` in each. Returns the entries cancelled (none if the batch is unknown or `batch_id` is not
+        an int: ``True`` is not batch 1)."""
         def change(data):
             found = [e for e in data["entries"] if e["state"] == "queued" and isinstance(e.get("batch"), dict)
-                     and e["batch"].get("id") == batch_id]
+                     and type(batch_id) is int and e["batch"].get("id") == batch_id]
             for entry in found:
                 _transition(entry, "cancelled", via="stop_batch")
                 entry["stoppedBy"] = by
