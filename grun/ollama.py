@@ -7,6 +7,7 @@ import json
 import os
 import time
 import urllib.parse
+import urllib.error  # noqa: F401  (HTTPError on a refused redirect)
 import urllib.request
 
 from . import machine_lock
@@ -17,7 +18,17 @@ DEFAULT_URL = "http://localhost:11434"
 LOCAL_HOSTS = ("localhost", "127.0.0.1", "::1")
 MODES = ("unload", "abort", "ignore")
 MAX_BYTES = 1024 * 1024
-_OPENER = urllib.request.build_opener(urllib.request.ProxyHandler({}))  # never through a proxy
+
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    """Never follow a redirect (invariant 11): the 3xx is raised as an `HTTPError`, a failure like any other."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
+# never through a proxy, never to another host by redirect
+_OPENER = urllib.request.build_opener(urllib.request.ProxyHandler({}), _NoRedirect())
 
 
 def check_local(url) -> str:

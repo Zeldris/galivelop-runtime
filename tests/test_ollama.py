@@ -72,6 +72,33 @@ class UnloadTests(unittest.TestCase):
         ollama.unload(closed_port_url(), "x", timeout=1)
 
 
+class RedirectTests(unittest.TestCase):  # invariant 11
+    """A 3xx is never followed: the target (another fake, standing for a non-local host) gets nothing."""
+
+    def test_ps_redirect_is_not_followed(self):
+        with FakeOllama(models=[{"name": "m", "size": 5}]) as target, FakeOllama(redirect=None) as src:
+            src.redirect = target.url
+            self.assertEqual(ollama.loaded(src.url), [])
+            self.assertEqual(src.paths(), [("GET", "/api/ps")])
+            self.assertEqual(target.requests, [])
+
+    def test_redirect_is_an_http_error(self):
+        with FakeOllama() as target, FakeOllama() as src:
+            src.redirect = target.url
+            with self.assertRaises(ollama.urllib.error.HTTPError) as cm:
+                ollama._request(src.url, "/api/ps")
+            self.assertEqual(cm.exception.code, 302)
+            self.assertEqual(target.requests, [])
+
+    def test_unload_redirect_is_not_followed(self):
+        with FakeOllama(models=[{"name": "m", "size": 5}]) as target, FakeOllama() as src:
+            src.redirect = target.url
+            ollama.unload(src.url, "m")
+            self.assertEqual(src.paths(), [("POST", "/api/generate"), ("POST", "/api/embed")])
+            self.assertEqual(target.requests, [])
+            self.assertEqual(target.models, [{"name": "m", "size": 5}])
+
+
 class EvictTests(unittest.TestCase):
     def setUp(self):
         env = mock.patch.dict(os.environ, {"GRUN_OLLAMA_URL": ""})

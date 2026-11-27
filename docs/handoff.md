@@ -9,9 +9,9 @@
 | Campo | Valor |
 |---|---|
 | **Rama** | `ccr-2447cc83-5kxr8j` |
-| **Fase / tarea** | `0.1` (R1): R1.4 (worker) implementado (`29b697d`, `598963d`), sin revisar. Presupuesto de compactaciones: 0 |
-| **Último punto estable** | este commit: R1.4 con sus tests (252). Antes, la ficha (`2ba6c9c`) y R1.3 revisado (`4cb110c`). |
-| **Siguiente paso** | Revisión de bloque de R1.4 con `gw-reviewer` en contexto limpio: diff `4cb110c..HEAD` (~1600 líneas), criterio de `REVIEW.md`, «no informes de lo que ya está en `docs/records/pending.md`»; arreglos a `gw-worker` sonnet; commit con `Findings:`. Luego R1.5. |
+| **Fase / tarea** | `0.1` (R1): R1.4 (worker) revisado: revisión de bloque hecha, 1 medio arreglado (Ollama no sigue redirecciones, invariante 11), 5 leves a `docs/records/pending.md`. Presupuesto de compactaciones: 0 |
+| **Último punto estable** | este commit: arreglo de la revisión de R1.4. Antes, R1.4 implementado (`29b697d`, `598963d`) y R1.3 revisado (`4cb110c`). |
+| **Siguiente paso** | R1.5: `grun doctor` (D-15), ver `docs/roadmap.md`. |
 | **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (252 tests). |
 
 ## Autoría

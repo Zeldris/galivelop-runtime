@@ -6,9 +6,10 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 
 class FakeOllama:
     """`models`: what `/api/ps` lists (dicts with name and size). `unloads`: whether a ``keep_alive: 0`` request
-    drops the model. `on_ps`: called with the count of `/api/ps` requests. `ps_body`: raw bytes to answer instead."""
+    drops the model. `redirect`: answer every request with a 302 to it. `on_ps`: called with the count of `/api/ps` requests. `ps_body`: raw bytes to answer instead."""
 
-    def __init__(self, models=(), unloads=True, on_ps=None, ps_body=None):
+    def __init__(self, models=(), unloads=True, on_ps=None, ps_body=None, redirect=None):
+        self.redirect = redirect  # URL base: every request answers 302 to it + path
         self.models = [dict(m) for m in models]
         self.unloads = unloads
         self.on_ps = on_ps
@@ -27,8 +28,16 @@ class FakeOllama:
                 self.end_headers()
                 self.wfile.write(payload)
 
+            def _redirect(self):
+                self.send_response(302)
+                self.send_header("Location", outer.redirect + self.path)
+                self.send_header("Content-Length", "0")
+                self.end_headers()
+
             def do_GET(self):
                 outer.requests.append(("GET", self.path, None))
+                if outer.redirect is not None:
+                    return self._redirect()
                 if self.path == "/api/ps":
                     count = sum(1 for r in outer.requests if r[1] == "/api/ps")
                     if outer.on_ps is not None:
@@ -41,6 +50,8 @@ class FakeOllama:
             def do_POST(self):
                 body = json.loads(self.rfile.read(int(self.headers.get("Content-Length") or 0)) or b"{}")
                 outer.requests.append(("POST", self.path, body))
+                if outer.redirect is not None:
+                    return self._redirect()
                 if outer.unloads and body.get("keep_alive") == 0:
                     outer.models = [m for m in outer.models if m["name"] != body.get("model")]
                 self._send(b"{}")
