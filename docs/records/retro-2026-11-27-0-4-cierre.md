@@ -1,6 +1,6 @@
 # Retro de 0.4 (R5, barrido de leves y protocolo `grun.lock/1`)
 
-**Estado:** pendiente
+**Estado:** aprobada y aplicada (P2); P1 anotada como tarea `R6.1` y aplazada a `0.5`; P3 y P4 quedan para el flujo; P5 aplazada
 
 Sesión: barrido de leves de `queue.py`, `machine_lock.py` y `fsutil.py`, protocolo `grun.lock/1` y revisión de bloque
 (`c1a6e1b`..`1d22820`). Tres subagentes (`gw-worker` ×2, `gw-reviewer`), todos `sonnet`, 1,13 M de entrada; la sesión
