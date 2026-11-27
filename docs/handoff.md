@@ -9,9 +9,9 @@
 | Campo | Valor |
 |---|---|
 | **Rama** | `ccr-2447cc83-5kxr8j` |
-| **Fase / tarea** | `0.1` (R1) y `0.2` (R3) fusionadas en `main` (PR #4, `e1277d7`). Sin tarea en curso. Presupuesto de compactaciones: 0 |
+| **Fase / tarea** | `0.1` (R1) y `0.2` (R3) fusionadas en `main` (PR #4, `e1277d7`). `0.3` (R4) repartida en R4.1-R4.4 (`docs/roadmap.md`), ninguna empezada. Presupuesto de compactaciones: 1 |
 | **Último punto estable** | merge de `main` (`e1277d7`) en la rama. |
-| **Siguiente paso** | `0.3` (R4). D-7 en gvoice sigue pendiente de la persona (`pending.md`); no bloquea R4. |
+| **Siguiente paso** | R4.1, servidor base (`docs/tasks/R4.1.md`, ya escrita): dealer a `gw-worker` `sonnet medium`. Aviso a la persona: gimg no tiene `machine_lock.py` (R2 no está en su checkout). D-7 en gvoice sigue pendiente de la persona (`pending.md`); no bloquea R4. |
 | **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (306 tests). |
 
 ## Autoría
