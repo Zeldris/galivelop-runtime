@@ -91,6 +91,18 @@ def _open_fds():
 
 
 @unittest.skipUnless(os.path.isdir("/proc/self/fd"), "needs /proc/self/fd")
+class HeldTests(unittest.TestCase):
+    def test_only_blocking_error_is_held(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "x.lock"
+            path.write_text("")
+            with mock.patch("grun.fsutil.fcntl.flock", side_effect=OSError(37, "no locks")):
+                self.assertIsNone(fsutil.held(path))
+            with mock.patch("grun.fsutil.fcntl.flock", side_effect=BlockingIOError(11, "again")):
+                self.assertIs(fsutil.held(path), True)
+            self.assertIs(fsutil.held(path), False)
+
+
 class WriteJsonFdTests(unittest.TestCase):
     def setUp(self):
         tmp = tempfile.TemporaryDirectory()
