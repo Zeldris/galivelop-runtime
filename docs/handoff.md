@@ -11,7 +11,7 @@
 | **Rama** | `ccr-2447cc83-5kxr8j` |
 | **Fase / tarea** | `0.2` (R3): R3.1 hecho y revisado; `0.1` fusionada en `main`. `0.1` (R1) completo y revisado. Presupuesto de compactaciones: 0 |
 | **Último punto estable** | este commit: `grun vendor` (R3.1). Antes, `1fc3c8a` (CI verde). |
-| **Siguiente paso** | Versión `0.1.0` subida a `main` por PR #3; después, etiqueta `v0.1.0` sobre el commit fusionado. Luego R3.2 (alias) cuando devuelva la sesión de gvoice (`session_01VdeHm9ESLr7pEB8izbfdt1`) y R3.3 (barrido de leves). |
+| **Siguiente paso** | PR #3 fusionado en `main` (`90c468b`, CI verde, `__version__` 0.1.0). Pendiente de la persona: subir la etiqueta `v0.1.0` a `90c468b` (el push de etiquetas falla desde la sesión: `git tag -a v0.1.0 90c468b -m v0.1.0 && git push origin v0.1.0`, o una release en GitHub). Después: R3.2 (alias) cuando devuelva la sesión de gvoice (`session_01VdeHm9ESLr7pEB8izbfdt1`) y R3.3 (barrido de leves). |
 | **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (294 tests). |
 
 ## Autoría
