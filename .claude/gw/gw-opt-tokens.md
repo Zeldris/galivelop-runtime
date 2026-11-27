@@ -36,3 +36,5 @@ las crea una vez; desde entonces son del proyecto.
 
 - El arranque fijo de los conectores (`Claude_Docs`, `github`, `claude-code-remote`): en Claude cloud no se pueden
   desactivar (retro F0, P1 rechazada). Solo baja haciendo menos llamadas.
+
+- 2026-11-27, cierre de `0.3` (tras `/clear`): 10 llamadas, contexto medio 91 983, 920 k de entrada (97 % de caché); arranque fijo ~80 510 por llamada (88 %). `pending.md` leído 3 veces (P2 aplazada).
