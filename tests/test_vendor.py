@@ -6,6 +6,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from grun import __version__, vendor
 from grun.errors import GrunError
@@ -130,6 +131,9 @@ class VendorTests(unittest.TestCase):
 
 class VendorCliTests(unittest.TestCase):
     def setUp(self):
+        lang = mock.patch.dict("os.environ", {"GALIVELOP_LANG": "en"})  # the tests read the English messages
+        lang.start()
+        self.addCleanup(lang.stop)
         self._tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self._tmp.cleanup)
         self.dest = Path(self._tmp.name)

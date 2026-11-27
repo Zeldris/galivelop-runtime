@@ -1,7 +1,7 @@
 # galivelop-runtime
 
 Núcleo común de ejecución local para los generadores de Galivelop (`grun`): cola, worker, candado de máquina
-compartido y turno de Ollama. Estado: diseño (F-1). Ver el [DDD](docs/design/ddd.md) y la [bitácora](docs/handoff.md).
+compartido y turno de Ollama. Estado: `0.1.0` publicada (el paquete `grun`); `0.2` en curso, ver el [roadmap](docs/roadmap.md). Ver el [DDD](docs/design/ddd.md) y la [bitácora](docs/handoff.md).
 
 ## Licencia
 
