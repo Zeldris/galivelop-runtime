@@ -9,7 +9,7 @@ dies, so a worker killed in the middle of a job never leaves the machine locked.
 (`held_fds`) keeps the lock after its parent dies. The file is never deleted nor replaced (that would let two holders
 lock two different files); it is created with the state folder when missing.
 
-While held, the file contains the holder record (``grun.lock/0``), written in place through the locked descriptor
+While held, the file contains the holder record (``grun.lock/1``, `schemas/grun.lock.1.json`), written in place through the locked descriptor
 (never an atomic replace: it would change the inode and break the lock). It is informative only: the lock is the
 ``flock``, and a holder that writes nothing (e.g. ``flock(1)``) is still a holder."""
 from __future__ import annotations
@@ -19,14 +19,16 @@ import datetime
 import fcntl
 import json
 import os
+import threading
 import time
 
 from . import paths
 from .errors import GrunError
 
 POLL_S = 0.05
-SCHEMA = "grun.lock/0"
+SCHEMA = "grun.lock/1"
 _held = []  # descriptors of the locks this process holds right now (see `held_fds`)
+_owner = None  # thread id of the outermost `hold` active in this process (a nested `hold` of it does not wait)
 
 
 class WaitCancelled(Exception):
@@ -49,7 +51,12 @@ def _write_holder(fd: int, app, entry) -> None:
 def hold(should_cancel=None, on_wait=None, poll_s: float = POLL_S, *, app=None, entry=None):
     """Hold the machine lock for the ``with`` block. `on_wait` is called once, when the lock turns out to be busy;
     `should_cancel` is asked while waiting (true raises `WaitCancelled` and takes nothing). `app` and `entry` go into
-    the holder record."""
+    the holder record. Reentrant per thread: a ``with hold()`` nested in one of the same thread takes nothing more
+    (it would wait for itself for ever); another thread of the process waits as any other holder."""
+    global _owner
+    if _owner == threading.get_ident():
+        yield
+        return
     path = paths.machine_lock_path()
     try:
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -71,10 +78,12 @@ def hold(should_cancel=None, on_wait=None, poll_s: float = POLL_S, *, app=None, 
                     raise WaitCancelled()
                 time.sleep(poll_s)
         _held.append(fd)
+        _owner = threading.get_ident()
         _write_holder(fd, app, entry)
         yield
     finally:
         if fd in _held:
+            _owner = None
             _held.remove(fd)
             try:
                 os.ftruncate(fd, 0)  # still locked here: clear the record before letting go
@@ -90,26 +99,32 @@ def held_fds() -> tuple:
     return tuple(_held)
 
 
-def busy() -> bool:
-    """Does another process (or another open descriptor) hold the lock right now? A pure read that creates nothing."""
+def busy():
+    """Does another process (or another open descriptor) hold the lock right now? ``True`` / ``False``, or ``None``
+    when it cannot be known (the file exists but cannot be opened, or ``flock`` fails for another reason than the
+    lock being taken). No file means nobody holds it. A pure read that creates nothing."""
     try:
         fd = os.open(str(paths.machine_lock_path()), os.O_RDWR)
-    except OSError:
+    except FileNotFoundError:
         return False
+    except OSError:
+        return None
     try:
         try:
             fcntl.flock(fd, fcntl.LOCK_SH | fcntl.LOCK_NB)
         except BlockingIOError:
             return True
+        except OSError:
+            return None
         return False
     finally:
         os.close(fd)
 
 
 def holder():
-    """``None`` if nobody holds the lock; else the holder record (a dict), or ``{}`` when the file is empty or does not
-    hold a JSON object (the holder wrote nothing, or something else). Creates nothing."""
-    if not busy():
+    """``None`` if nobody holds the lock (or `busy` cannot tell); else the holder record (a dict), or ``{}`` when the
+    file is empty or does not hold a JSON object (the holder wrote nothing, or something else). Creates nothing."""
+    if busy() is not True:
         return None
     try:
         with open(str(paths.machine_lock_path()), "rb") as f:

@@ -114,3 +114,6 @@ creada.
 ## Reglas del proyecto
 
 <!-- Las rellena el proyecto: lo que nunca se publica, reglas del dominio, accesibilidad, rendimiento, seguridad. -->
+
+- Un test que lanza procesos hijo los mata por grupo (`start_new_session` y `os.killpg`) en el cleanup, también si
+  falla: un hijo vivo deja el candado tomado para el test siguiente. (criterio)
