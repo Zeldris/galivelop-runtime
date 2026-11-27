@@ -41,7 +41,7 @@ El desalojo entra en `0.1`, no en `0.4`: gvoice retira su script en R3 (D-7) y n
 |---|---|---|
 | R3.1 | **`grun vendor`:** copia con `VENDOR.json` y huella sha256, y su verificación (`docs/tasks/R3.1.md`) | hecho (2026-11-27) |
 | R3.2 | **Alias `GVOICE_STATE_HOME` retirado** (D-1), cuando gvoice ya use `GALIVELOP_STATE_HOME` | pendiente |
-| R3.3 | **Barrido de leves:** función común de lectura de JSON que da el código `bad_*` ante `RecursionError`/`OSError` (`doctor`, `queue`, `vendor`), más los leves de `doctor.py` y `vendor.py` de `pending.md` | pendiente |
+| R3.3 | **Barrido de leves:** función común de lectura de JSON que da el código `bad_*` ante `RecursionError`/`OSError` (`doctor`, `queue`, `vendor`), más los leves de `doctor.py` y `vendor.py` de `pending.md` | hecho (2026-11-27) |
 
 ## Bloqueos externos
 

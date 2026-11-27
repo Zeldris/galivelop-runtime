@@ -11,7 +11,7 @@ from pathlib import Path
 
 from .errors import GrunError
 
-NAME_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
+NAME_RE = re.compile(r"[a-z0-9][a-z0-9-]*")
 OLLAMA_MODES = ("unload", "abort", "ignore")
 
 
@@ -76,7 +76,7 @@ def load_profile(ref=None, *, presets, env_var, config_path=None, default="steam
     if "/" in ref or ref.endswith(".json"):
         path = Path(ref)
     else:
-        if not NAME_RE.match(ref):
+        if not NAME_RE.fullmatch(ref):
             raise GrunError("machine.bad_name", name=ref)
         path = Path(presets) / (ref + ".json")
     profile = _read_json(path)

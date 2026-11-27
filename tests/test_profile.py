@@ -80,7 +80,7 @@ class ResolutionTests(ProfileBase):
 
 class ErrorTests(ProfileBase):
     def test_bad_names(self):
-        for name in ("Steam", "-x", "a b", "a_b", ".x"):
+        for name in ("Steam", "-x", "a b", "a_b", ".x", "steam-deck\n"):
             self.assertEqual(self.error(name).code, "machine.bad_name", name)
         self.assertEqual(self.error("UPPER").params["name"], "UPPER")
 

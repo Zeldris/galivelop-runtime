@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -31,6 +32,11 @@ def _pos(entry: dict):
     """Run order of a queued entry, as `queue._pos`: its ``position`` (else its id), then its id."""
     pos = entry.get("position")
     return (pos if isinstance(pos, (int, float)) and not isinstance(pos, bool) else entry["id"], entry["id"])
+
+
+def _plain(value) -> str:
+    """`value` as text with control characters (terminal escape sequences, newlines) written as ``\\xNN``."""
+    return re.sub(r"[\x00-\x1f\x7f-\x9f]", lambda m: "\\x%02x" % ord(m.group()), str(value))
 
 
 def _exists(path: Path) -> bool:
@@ -102,9 +108,10 @@ def render(report: dict, lang: str | None = None) -> str:
             lines.append(t("doctor.machine_free", path=machine["path"]))
         elif machine["holder"]:
             h = machine["holder"]
-            lines.append(t("doctor.machine_busy", path=machine["path"], app=h.get("app") or "?",
-                           entry=h.get("entry") if h.get("entry") is not None else "?",
-                           pid=h.get("pid") if h.get("pid") is not None else "?", since=h.get("since") or "?"))
+            lines.append(t("doctor.machine_busy", path=machine["path"], app=_plain(h.get("app") or "?"),
+                           entry=_plain(h.get("entry") if h.get("entry") is not None else "?"),
+                           pid=_plain(h.get("pid") if h.get("pid") is not None else "?"),
+                           since=_plain(h.get("since") or "?")))
         else:
             lines.append(t("doctor.machine_busy_unknown", path=machine["path"]))
     queue = report.get("queue")
@@ -156,7 +163,8 @@ def main(argv=None) -> int:
     try:
         report = diagnose(Path(args.data))
     except GrunError as exc:
-        report = {"problems": [{"code": "doctor.error", "params": {"message": exc.message(lang)}}]}
+        report = {"app": None, "machine": None, "queue": None, "orphans": [], "locks": [],
+                  "problems": [{"code": "doctor.error", "params": {"message": exc.message(lang)}}]}
     if args.json:
         print(json.dumps(report, indent=2, sort_keys=True, ensure_ascii=False))
     else:
