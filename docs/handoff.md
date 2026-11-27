@@ -9,9 +9,9 @@
 | Campo | Valor |
 |---|---|
 | **Rama** | `ccr-2447cc83-5kxr8j` |
-| **Fase / tarea** | `0.1` (R1): R1.3 hecho y revisado (revisión de bloque R1.2+R1.3 cerrada: 2 medios arreglados, 8 leves a pendientes). Presupuesto de compactaciones: 0 |
-| **Último punto estable** | este commit: R1.3 con los arreglos de la revisión de bloque (`move`/`move_batch` con lotes antiguos y posiciones repetidas). Antes, R1.3 (`cb8d388`) y R1.2 (`f63aca7`). |
-| **Siguiente paso** | R1.4 (worker): ficha `docs/tasks/R1.4.md` primero, con el contrato de `worker.lock` de pendientes. |
+| **Fase / tarea** | `0.1` (R1): R1.4 (worker) en curso: ficha `docs/tasks/R1.4.md` escrita; falta el código. Presupuesto de compactaciones: 0 |
+| **Último punto estable** | este commit: ficha de R1.4. Antes, R1.3 con los arreglos de su revisión (`4cb110c`). |
+| **Siguiente paso** | R1.4: implementar la ficha (`engine.py`, `ollama.py`, `profile.py`, `worker.py` y sus tests) con un subagente `gw-worker`, y revisar su diff. |
 | **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (162 tests). |
 
 ## Autoría
