@@ -9,10 +9,10 @@
 | Campo | Valor |
 |---|---|
 | **Rama** | `ccr-2447cc83-5kxr8j` |
-| **Fase / tarea** | `0.1` (R1) y `0.2` (R3) fusionadas en `main` (PR #4, `e1277d7`). `0.3` (R4) repartida en R4.1-R4.4 (`docs/roadmap.md`): R4.1 y R4.2 hechas y revisadas (2 medios arreglados, leves en `pending.md`); R4.3 hecha, sin revisar. Presupuesto de compactaciones: 1 |
-| **Último punto estable** | R4.3: lanzador `grun/launcher.py` (`docs/tasks/R4.3.md`), sobre R4.2 (ganchos) y R4.1 (servidor base). |
-| **Siguiente paso** | R4.4, invariante 13 (respuestas de `/api/queue` fijadas como ejemplo y validadas contra `grun.queue/0`; `docs/roadmap.md`; ficha por escribir); luego revisión del bloque R4.3-R4.4. Aviso a la persona: gimg no tiene `machine_lock.py` (R2 no está en su checkout). D-7 en gvoice sigue pendiente de la persona (`pending.md`); no bloquea R4. |
-| **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (374 tests). |
+| **Fase / tarea** | `0.1` (R1) y `0.2` (R3) fusionadas en `main` (PR #4, `e1277d7`). `0.3` (R4) repartida en R4.1-R4.4 (`docs/roadmap.md`): R4.1 y R4.2 hechas y revisadas (2 medios arreglados, leves en `pending.md`); R4.3 y R4.4 hechas, sin revisar el bloque. Presupuesto de compactaciones: 1 |
+| **Último punto estable** | R4.4: invariante 13, esquema `schemas/grun.queue.0.json` y ejemplos de `/api/queue` (`docs/tasks/R4.4.md`), sobre R4.3 (lanzador). |
+| **Siguiente paso** | Cerrar el bloque R4: revisión del diff desde `c4b88f7` (`/code-review --max-findings all`, fase 1), arreglos, y avisar a la persona de lo que queda en gimg/gvoice (`pending.md`) antes de ir a `main` (fases 2-3, solo con su confirmación). gimg no tiene `machine_lock.py` (R2 no está en su checkout); D-7 en gvoice sigue pendiente de la persona. |
+| **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (385 tests). |
 
 ## Autoría
 

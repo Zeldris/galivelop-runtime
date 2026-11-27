@@ -1,0 +1,16 @@
+[
+  {"id": 1, "position": 1, "state": "running", "pid": 4242, "enqueuedAt": "2026-11-27T10:00:00Z",
+   "startedAt": "2026-11-27T10:00:05Z", "finishedAt": null, "error": null, "attemptId": null,
+   "cancelRequested": false, "orphanCount": 0, "progress": {"step": 3, "steps": 20, "etaS": 41.5},
+   "project": "p", "estimateMs": 52000},
+  {"id": 2, "position": 2, "state": "queued", "pid": null, "enqueuedAt": "2026-11-27T10:00:01Z",
+   "startedAt": null, "finishedAt": null, "error": null, "attemptId": null, "cancelRequested": false,
+   "orphanCount": 0, "batch": {"id": 2, "index": 0, "size": 2}, "project": "p", "held": "needs the model",
+   "estimateMs": 52000},
+  {"id": 3, "position": 3, "state": "failed", "pid": null, "enqueuedAt": "2026-11-27T09:00:00Z",
+   "startedAt": "2026-11-27T09:00:02Z", "finishedAt": "2026-11-27T09:00:09Z",
+   "error": {"code": "engine.failed", "params": {"reason": "boom"},
+             "errors": [{"path": "steps", "code": "bad", "params": {}}]},
+   "attemptId": "att-1", "cancelRequested": false, "orphanCount": 1, "stoppedBy": "att-0", "project": "p",
+   "errorText": "the engine failed: boom"}
+]
