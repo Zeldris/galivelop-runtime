@@ -184,12 +184,18 @@ class Queue:
 
     `held(entry)`: ``None`` or the reason an entry must not be claimed (`entry_view` shows it as ``held``).
     `clean_pending(entry)`: called for each entry recovered; its exceptions are swallowed.
+    `checks(item)`: called by `enqueue` for each item before anything is queued; ``None`` if valid, else the reason
+    (a string, ``queue.bad_item``); it may raise a `GrunError` of its own, which goes up as is.
+    `estimate(entry)`: milliseconds the entry should take, or ``None``; `entry_view` shows it as ``estimateMs``
+    (an exception or a non-number is ignored: a view must always render).
     `keep_terminal`: how many finished entries are kept."""
 
-    def __init__(self, data, *, held=None, clean_pending=None, keep_terminal: int = 200):
+    def __init__(self, data, *, held=None, clean_pending=None, checks=None, estimate=None, keep_terminal: int = 200):
         self.data = Path(data)
         self._held = held
         self._clean_pending = clean_pending
+        self._checks = checks
+        self._estimate = estimate
         self.keep_terminal = keep_terminal
         self._path = paths.queue_path(self.data)
 
@@ -303,6 +309,9 @@ class Queue:
             clash = [k for k in CORE_KEYS if k in item]
             if clash:
                 raise GrunError("queue.bad_item", index=index, reason="uses the reserved field " + ", ".join(clash))
+            reason = None if self._checks is None else self._checks(copy.deepcopy(item))
+            if reason:
+                raise GrunError("queue.bad_item", index=index, reason=str(reason))
         now = _now()
 
         def change(data):
@@ -340,8 +349,16 @@ class Queue:
         return self._txn(lambda data: bool(_find(data, entry_id).get("cancelRequested")))
 
     def entry_view(self, entry: dict, lang: str | None = None) -> dict:
-        """The JSON form of an entry: the entry plus ``held`` (the reason, if retained) and ``errorText``."""
+        """The JSON form of an entry: the entry plus ``held`` (the reason, if retained), ``estimateMs`` (if the
+        `estimate` hook gives one) and ``errorText``."""
         item = dict(entry)
+        if self._estimate is not None:
+            try:
+                ms = self._estimate(copy.deepcopy(entry))
+            except Exception:
+                ms = None
+            if _number(ms):
+                item["estimateMs"] = ms
         held = self._is_held(entry)
         if held is not None:
             item["held"] = held

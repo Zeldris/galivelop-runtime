@@ -549,6 +549,43 @@ class HeldTests(QueueBase):
         self.assertEqual(len(q.list_runnable()), 1)
 
 
+class HooksTests(QueueBase):
+    def test_checks_reject_before_queueing_anything(self):
+        self.q = queue.Queue(self.data, checks=lambda i: "no prompt" if not i.get("prompt") else None)
+        with self.assertRaises(GrunError) as cm:
+            self.q.enqueue([{"prompt": "a"}, {"prompt": ""}])
+        self.assertEqual(cm.exception.code, "queue.bad_item")
+        self.assertEqual(cm.exception.params["index"], 1)
+        self.assertEqual(cm.exception.params["reason"], "no prompt")
+        self.assertEqual(self.ids(), [])
+        self.assertEqual(len(self.q.enqueue([{"prompt": "a"}])), 1)
+
+    def test_checks_own_error_goes_up_as_is(self):
+        def checks(item):
+            raise GrunError("queue.unknown", id=7)
+        self.q = queue.Queue(self.data, checks=checks)
+        self.assertEqual(self.code(self.q.enqueue, [{"a": 1}]), "queue.unknown")
+
+    def test_checks_get_a_copy(self):
+        def checks(item):
+            item["x"] = 1
+        self.q = queue.Queue(self.data, checks=checks)
+        self.assertNotIn("x", self.q.enqueue([{"a": 1}])[0])
+
+    def test_estimate_in_view(self):
+        self.q = queue.Queue(self.data, estimate=lambda e: 1500 if e["n"] == 0 else None)
+        self.add(2, batch=False)
+        views = [self.q.entry_view(e) for e in self.q.list_entries()]
+        self.assertEqual(views[0]["estimateMs"], 1500)
+        self.assertNotIn("estimateMs", views[1])
+
+    def test_estimate_failure_or_bad_value_is_ignored(self):
+        for hook in (lambda e: 1 / 0, lambda e: "soon", lambda e: -5, lambda e: True):
+            self.q = queue.Queue(self.data, estimate=hook)
+            self.add(1)
+            self.assertNotIn("estimateMs", self.q.entry_view(self.q.list_entries()[-1]))
+
+
 class PruneTests(QueueBase):
     def test_keeps_the_last_terminal(self):
         self.q = queue.Queue(self.data, keep_terminal=2)
