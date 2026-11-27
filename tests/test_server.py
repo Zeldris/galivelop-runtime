@@ -1,3 +1,4 @@
+import errno
 import fcntl
 import http.client
 import json
@@ -260,6 +261,17 @@ class MakeServerTests(unittest.TestCase):
             port = sock.getsockname()[1]
             self.assertEqual(self.code(server.make_server, port, self.app), ("serve.port_busy", {"port": port}))
 
+    def test_bad_port_is_api_bad_param(self):
+        for port in (70000, -1, "x", 1.5, True, None):
+            self.assertEqual(self.code(server.make_server, port, self.app), ("api.bad_param", {"name": "port"}), port)
+
+    def test_other_os_errors_are_not_port_busy(self):
+        err = PermissionError(errno.EACCES, "Permission denied")
+        with mock.patch.object(server, "Server", side_effect=err):
+            code, params = self.code(server.make_server, 80, self.app)
+        self.assertEqual(code, "api.unexpected")
+        self.assertIn("Permission denied", params["message"])
+
     def test_texts_exist_in_every_language(self):
         for lang in ("en", "es"):
             for code in ("serve.port_busy", "serve.already_running", "api.bad_host", "api.bad_origin"):
@@ -282,6 +294,17 @@ class HealthTests(ServerBase):
 
 
 class QueueRouteTests(ServerBase):
+    def test_non_finite_estimate_keeps_the_json_valid(self):
+        self.add(1)
+        self.q._estimate = lambda e: float("inf")
+        status, _, payload = self.call("GET", "/api/queue")
+        self.assertEqual(status, 200)
+
+        def reject(token):
+            raise AssertionError("invalid JSON constant %s" % token)
+        data = json.loads(payload.decode(), parse_constant=reject)
+        self.assertNotIn("estimateMs", data[0])
+
     def test_list_with_state_filter_and_pause_header(self):
         self.add(2)
         self.hold_worker()

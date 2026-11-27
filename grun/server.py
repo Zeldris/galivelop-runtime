@@ -10,6 +10,7 @@ The application is an `App`; its own routes go in with `Server.add_route(method,
 from __future__ import annotations
 
 import contextlib
+import errno
 import fcntl
 import json
 import os
@@ -227,7 +228,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def _write(self, reply: Reply):
         if reply.json:
-            data = json.dumps(reply.body, ensure_ascii=False).encode("utf-8")
+            data = json.dumps(reply.body, ensure_ascii=False, allow_nan=False).encode("utf-8")
             ctype = "application/json; charset=utf-8"
         else:
             data = reply.body if isinstance(reply.body, bytes) else str(reply.body).encode("utf-8")
@@ -496,10 +497,14 @@ def make_server(port: int, app, host: str = BIND_HOST) -> Server:
     ollama.check_local("http://%s" % (host if ":" not in host else "[%s]" % host))
     if host not in (BIND_HOST, "localhost"):
         raise GrunError("net.non_local_host", host=host)
+    if not isinstance(port, int) or isinstance(port, bool) or not 0 <= port <= 65535:
+        raise GrunError("api.bad_param", name="port")
     try:
         return Server((BIND_HOST, port), Handler, app)
-    except OSError:
-        raise GrunError("serve.port_busy", port=port) from None
+    except OSError as exc:
+        if exc.errno == errno.EADDRINUSE:
+            raise GrunError("serve.port_busy", port=port) from None
+        raise GrunError("api.unexpected", message="%s: %s" % (type(exc).__name__, exc)) from None
 
 
 def start_thread(server: Server) -> threading.Thread:

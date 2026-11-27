@@ -9,10 +9,10 @@
 | Campo | Valor |
 |---|---|
 | **Rama** | `ccr-2447cc83-5kxr8j` |
-| **Fase / tarea** | `0.1` (R1) y `0.2` (R3) fusionadas en `main` (PR #4, `e1277d7`). `0.3` (R4) repartida en R4.1-R4.4 (`docs/roadmap.md`): R4.1 y R4.2 hechas (sin revisar). Presupuesto de compactaciones: 1 |
+| **Fase / tarea** | `0.1` (R1) y `0.2` (R3) fusionadas en `main` (PR #4, `e1277d7`). `0.3` (R4) repartida en R4.1-R4.4 (`docs/roadmap.md`): R4.1 y R4.2 hechas y revisadas (2 medios arreglados, leves en `pending.md`). Presupuesto de compactaciones: 1 |
 | **Último punto estable** | R4.2: ganchos `checks` y `estimate` de `Queue` (`docs/tasks/R4.2.md`), sobre R4.1 (servidor base). |
-| **Siguiente paso** | Revisión del bloque R4.1-R4.2 (`/code-review` del diff desde `e1277d7`; el `commit-msg` avisa de bloque pasado), luego R4.3, lanzador `grun/launcher.py` (D-11; `docs/roadmap.md`; ficha por escribir). Aviso a la persona: gimg no tiene `machine_lock.py` (R2 no está en su checkout). D-7 en gvoice sigue pendiente de la persona (`pending.md`); no bloquea R4. |
-| **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (358 tests). |
+| **Siguiente paso** | R4.3, lanzador `grun/launcher.py` (D-11; `docs/roadmap.md`; ficha por escribir). Aviso a la persona: gimg no tiene `machine_lock.py` (R2 no está en su checkout). D-7 en gvoice sigue pendiente de la persona (`pending.md`); no bloquea R4. |
+| **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (361 tests). |
 
 ## Autoría
 

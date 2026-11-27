@@ -580,7 +580,8 @@ class HooksTests(QueueBase):
         self.assertNotIn("estimateMs", views[1])
 
     def test_estimate_failure_or_bad_value_is_ignored(self):
-        for hook in (lambda e: 1 / 0, lambda e: "soon", lambda e: -5, lambda e: True):
+        for hook in (lambda e: 1 / 0, lambda e: "soon", lambda e: -5, lambda e: True,
+                     lambda e: float("inf"), lambda e: float("nan")):
             self.q = queue.Queue(self.data, estimate=hook)
             self.add(1)
             self.assertNotIn("estimateMs", self.q.entry_view(self.q.list_entries()[-1]))

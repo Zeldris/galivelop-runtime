@@ -127,7 +127,8 @@ def _check_move(to) -> None:
 
 
 def _number(value) -> bool:
-    return isinstance(value, (int, float)) and not isinstance(value, bool) and value >= 0
+    return isinstance(value, (int, float)) and not isinstance(value, bool) \
+        and math.isfinite(value) and value >= 0
 
 
 def make_error(code: str, errors=(), **params) -> dict:
