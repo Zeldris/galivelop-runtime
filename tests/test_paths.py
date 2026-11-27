@@ -42,21 +42,22 @@ class FolderTests(unittest.TestCase):
 
 
 class StateDirTests(unittest.TestCase):
-    """D-1: GALIVELOP_STATE_HOME > GVOICE_STATE_HOME (alias) > XDG_STATE_HOME/galivelop > ~/.local/state/galivelop."""
+    """D-1: GALIVELOP_STATE_HOME > XDG_STATE_HOME/galivelop > ~/.local/state/galivelop."""
 
-    def test_precedence_of_the_three_variables_and_the_alias(self):
-        with env(GALIVELOP_STATE_HOME="/new", GVOICE_STATE_HOME="/old", XDG_STATE_HOME="/xdg"):
+    def test_precedence_of_the_variables_and_the_alias_is_gone(self):
+        with env(GALIVELOP_STATE_HOME="/new", XDG_STATE_HOME="/xdg"):
             self.assertEqual(paths.state_dir(), Path("/new"))
+        # R3.2: GVOICE_STATE_HOME is no longer read.
         with env(GVOICE_STATE_HOME="/old", XDG_STATE_HOME="/xdg"):
-            self.assertEqual(paths.state_dir(), Path("/old"))
+            self.assertEqual(paths.state_dir(), Path("/xdg/galivelop"))
         with env(XDG_STATE_HOME="/xdg"):
             self.assertEqual(paths.state_dir(), Path("/xdg/galivelop"))
         with env():
             self.assertEqual(paths.state_dir(), Path("/h/.local/state/galivelop"))
 
-    def test_empty_new_variable_falls_to_the_alias(self):
-        with env(GALIVELOP_STATE_HOME="", GVOICE_STATE_HOME="/old"):
-            self.assertEqual(paths.state_dir(), Path("/old"))
+    def test_empty_new_variable_falls_to_xdg(self):
+        with env(GALIVELOP_STATE_HOME="", GVOICE_STATE_HOME="/old", XDG_STATE_HOME="/xdg"):
+            self.assertEqual(paths.state_dir(), Path("/xdg/galivelop"))
 
     def test_relative_xdg_state_ignored(self):
         with env(XDG_STATE_HOME="rel"):
@@ -192,8 +193,8 @@ class RelativeExplicitTests(unittest.TestCase):
             self.assertEqual(paths.data_dir(*APP), Path("/y/galivelop-voice"))
 
     def test_relative_state_ignored_and_falls_to_the_next(self):
-        with env(GALIVELOP_STATE_HOME="rel", GVOICE_STATE_HOME="/old"):
-            self.assertEqual(paths.state_dir(), Path("/old"))
+        with env(GALIVELOP_STATE_HOME="rel", GVOICE_STATE_HOME="/old", XDG_STATE_HOME="/xdg"):
+            self.assertEqual(paths.state_dir(), Path("/xdg/galivelop"))
         with env(GALIVELOP_STATE_HOME="rel", GVOICE_STATE_HOME="old", XDG_STATE_HOME="/xdg"):
             self.assertEqual(paths.machine_lock_path(), Path("/xdg/galivelop/gpu.lock"))
 

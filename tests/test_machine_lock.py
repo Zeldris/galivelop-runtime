@@ -86,10 +86,10 @@ class PathTests(LockBase):
             ({"FLATPAK_ID": "com.x", "XDG_STATE_HOME": "/xdg"}, "/xdg/galivelop/gpu.lock"),
             ({"FLATPAK_ID": "com.x"}, "/h/.local/state/galivelop/gpu.lock"),
             ({"GALIVELOP_STATE_HOME": "/g", "XDG_STATE_HOME": "/xdg"}, "/g/gpu.lock"),
-            ({"GVOICE_STATE_HOME": "/v", "XDG_STATE_HOME": "/xdg"}, "/v/gpu.lock"),
+            ({"GVOICE_STATE_HOME": "/v", "XDG_STATE_HOME": "/xdg"}, "/xdg/galivelop/gpu.lock"),
             ({"GALIVELOP_STATE_HOME": "/g", "GVOICE_STATE_HOME": "/v"}, "/g/gpu.lock"),
-            ({"GALIVELOP_STATE_HOME": "rel", "GVOICE_STATE_HOME": "/v"}, "/v/gpu.lock"),
-            ({"FLATPAK_ID": "com.x", "GVOICE_STATE_HOME": "/v", "XDG_STATE_HOME": sandbox}, "/v/gpu.lock"),
+            ({"GALIVELOP_STATE_HOME": "rel", "GVOICE_STATE_HOME": "/v"}, "/h/.local/state/galivelop/gpu.lock"),
+            ({"FLATPAK_ID": "com.x", "GVOICE_STATE_HOME": "/v", "XDG_STATE_HOME": sandbox}, "/h/.local/state/galivelop/gpu.lock"),
         ]
         for extra, expected in table:
             base = {"GALIVELOP_STATE_HOME": "", "GVOICE_STATE_HOME": "", "XDG_STATE_HOME": "", "FLATPAK_ID": "",
