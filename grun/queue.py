@@ -29,6 +29,7 @@ import contextlib
 import copy
 import fcntl
 import json
+import math
 import os
 from datetime import datetime, timezone
 from pathlib import Path
@@ -87,6 +88,22 @@ def _pos(entry: dict):
     """Sort key of a queued entry: its ``position`` (else its id), then its id."""
     pos = entry.get("position")
     return (pos if isinstance(pos, (int, float)) and not isinstance(pos, bool) else entry["id"], entry["id"])
+
+
+def _slots(line: list) -> list:
+    """The positions a reordered `line` is dealt: its own when strictly increasing, else distinct ones from the
+    lowest (repeated positions would let the id tie-break undo a move)."""
+    slots = [_pos(e)[0] for e in line]
+    if all(a < b for a, b in zip(slots, slots[1:])):
+        return slots
+    start = int(math.floor(min(slots)))
+    return list(range(start, start + len(slots)))
+
+
+def _block_key(entry: dict):
+    """Which batch block an entry belongs to; a loose entry (or an old non-dict ``batch``) is its own block."""
+    batch = entry.get("batch")
+    return batch.get("id", ("e", entry["id"])) if isinstance(batch, dict) else ("e", entry["id"])
 
 
 def _find(data: dict, entry_id) -> dict:
@@ -403,7 +420,7 @@ class Queue:
             if entry["state"] != "queued":
                 raise GrunError("queue.not_movable", id=entry["id"], state=entry["state"])
             line = sorted((e for e in data["entries"] if e["state"] == "queued"), key=_pos)
-            slots = [_pos(e)[0] for e in line]
+            slots = _slots(line)
             at = line.index(entry)
             if to == "top":
                 line.insert(0, line.pop(at))
@@ -428,13 +445,12 @@ class Queue:
             if not mine:
                 raise GrunError("queue.not_movable", id=batch_id, state="finished")
             line = sorted((e for e in data["entries"] if e["state"] == "queued"), key=_pos)
-            slots = [_pos(e)[0] for e in line]
+            slots = _slots(line)
             ids = {e["id"] for e in mine}
             rest = [e for e in line if e["id"] not in ids]
             at = next(i for i, e in enumerate(line) if e["id"] in ids)  # where its first entry stood among the others
             starts = [i for i in range(len(rest) + 1)
-                      if i in (0, len(rest)) or (rest[i].get("batch") or {}).get("id", ("e", rest[i]["id"]))
-                      != (rest[i - 1].get("batch") or {}).get("id", ("e", rest[i - 1]["id"]))]
+                      if i in (0, len(rest)) or _block_key(rest[i]) != _block_key(rest[i - 1])]
             if to == "top":
                 ins = 0
             elif to == "up":

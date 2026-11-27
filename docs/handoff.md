@@ -9,10 +9,10 @@
 | Campo | Valor |
 |---|---|
 | **Rama** | `ccr-2447cc83-5kxr8j` |
-| **Fase / tarea** | `0.1` (R1): R1.3 hecho (cola, ficha `docs/tasks/R1.3.md`); falta la revisión de bloque de R1.2+R1.3. Presupuesto de compactaciones: 0 |
-| **Último punto estable** | R1.3 (`cb8d388` + este commit): `grun/queue.py` (`Queue`, transiciones, huérfanas con `orphanCount`, lotes, `move`, pausa, progreso, `held`) con los tests de las invariantes 7-10 y 12; 159 tests. Antes, R1.2 (`f63aca7`). |
-| **Siguiente paso** | Revisión de bloque (diff desde `6470a30`, R1.2 + R1.3) con `gw-reviewer`; luego R1.4 (worker). |
-| **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (159 tests). |
+| **Fase / tarea** | `0.1` (R1): R1.3 hecho y revisado (revisión de bloque R1.2+R1.3 cerrada: 2 medios arreglados, 8 leves a pendientes). Presupuesto de compactaciones: 0 |
+| **Último punto estable** | este commit: R1.3 con los arreglos de la revisión de bloque (`move`/`move_batch` con lotes antiguos y posiciones repetidas). Antes, R1.3 (`cb8d388`) y R1.2 (`f63aca7`). |
+| **Siguiente paso** | R1.4 (worker): ficha `docs/tasks/R1.4.md` primero, con el contrato de `worker.lock` de pendientes. |
+| **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (162 tests). |
 
 ## Autoría
 

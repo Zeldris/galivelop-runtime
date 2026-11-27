@@ -416,6 +416,41 @@ class MoveTests(QueueBase):
         self.q.move_batch(1, "top")
         self.assertEqual(self.order(), [1, 2, 4, 5, 3])
 
+    def test_move_batch_with_legacy_batch_field(self):
+        self.add(2)  # batch 1: ids 1,2
+        self.add(3, batch=False)  # 3,4,5
+        data = self.raw()
+        data["entries"][2]["batch"] = "legacy"
+        self.write_raw(data)
+        self.q.move_batch(1, "down")
+        self.assertEqual(self.order(), [3, 1, 2, 4, 5])
+
+    def set_positions(self, pos):
+        data = self.raw()
+        for entry in data["entries"]:
+            entry["position"] = pos
+        self.write_raw(data)
+
+    def claims(self, n):
+        out = []
+        for _ in range(n):
+            entry = self.q.claim()
+            out.append(entry["id"])
+        return out
+
+    def test_move_with_repeated_positions(self):
+        self.add(3, batch=False)
+        self.set_positions(5)
+        self.q.move(3, "top")
+        self.assertEqual(self.claims(3), [3, 1, 2])
+
+    def test_move_batch_with_repeated_positions(self):
+        self.add(1, batch=False)  # 1
+        self.add(2)  # batch 2: ids 2,3
+        self.set_positions(5)
+        self.q.move_batch(2, "top")
+        self.assertEqual(self.claims(3), [2, 3, 1])
+
     def test_move_batch_with_nothing_queued(self):
         self.add(2)
         self.q.cancel_batch(1)
