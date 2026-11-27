@@ -283,8 +283,14 @@
     "^\\.claude/skills/.*\\.md$",
     "^\\.agents/skills/.*\\.md$"
   ],
-  "roadmap": false,
-  "roadmapFiles": [],
+  "roadmap": true,
+  "roadmapFiles": [
+    {
+      "path": "docs/roadmap.md",
+      "done": "hecho",
+      "open": ["pendiente", "en curso"]
+    }
+  ],
   "selector": {
     "cases": []
   },

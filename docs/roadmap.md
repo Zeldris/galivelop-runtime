@@ -12,26 +12,25 @@ una etiqueta `vX.Y.0`.
 |---|---|---|---|
 | — (F0) | R0 | DDD con D-1..D-17, estado actual verificado, este roadmap. Sin código | La persona aprueba el PR a `main` |
 | — (en gimg) | R2 | gimg copia `machine_lock.py` de gvoice («Copiado de gvoice@<sha>») y pasa `held_fds` a sd.cpp (D-17). Va antes que `0.1` | Prueba en la Deck (persona) |
-| `0.1` | R1 | El paquete `grun` (ver «Pasos de `0.1`») con los tests de las invariantes 1-12 | Tests en verde |
+| `0.1` | R1 | El paquete `grun` (ver la sección `0.1`) con los tests de las invariantes 1-12 | Tests en verde |
 | `0.2` | R3 | Lo que pida gvoice al vendorizar `grun`: herramienta de vendorizado con huella sha256, alias `GVOICE_STATE_HOME` retirado (D-1), script de desalojo de gvoice retirado (D-7) | Tests de gvoice en verde con `grun` vendorizado e invariante 13 |
 | `0.3` | R4 | Base del servidor local (D-2), lanzador opcional `maybe_launch` (D-11), los ganchos de cola que necesita la imagen (D-6), `gimg doctor` llama a `grun doctor` (D-15). gimg borra su copia de `machine_lock.py` | Tests de gimg en verde con `grun` vendorizado e invariante 13 |
 | `0.4` | R5 | Turno de Ollama: protocolo `grun.lock/1` publicado (D-13) e integración de `flock(1)` en `ollamaQueue.ts` de WMF (D-3) | Prueba de imagen, voz y texto a la vez en la Deck (persona) |
 | `0.5` | R6 | `grun.run/1` que lee GVE (D-13); GVE pasa por el turno (D-3); decisión sobre `grun.trace/0` (D-16) | GVE lo consume |
 | `1.0` | — | Interfaz de Python estable: la primera versión tras `0.5` en la que no ha hecho falta romperla | La persona lo decide |
 
-## Pasos de `0.1` (R1)
+## `0.1` «Paquete grun» (R1)
 
 R1 es la extracción entera y no cabe en una sola tarea. Se parte en pasos con su propio commit, en este orden (cada
-uno usa los anteriores):
+uno usa los anteriores). El estado se marca con `python3 .claude/gw/scripts/roadmap.py done <id>`.
 
-1. **Soporte:** rutas (D-1, con `GALIVELOP_STATE_HOME` y el alias `GVOICE_STATE_HOME`), límites, errores con i18n y
-   los códigos de D-14, escritura atómica y registro.
-2. **Candado de máquina:** el `machine_lock` de gvoice, con su titular y `held_fds`.
-3. **Cola:** la de gvoice más lo general de gimg (D-6): lotes, `move`, pausa, progreso, vista previa, `held`; orden
-   por posición y luego id (D-4); `<data>/queue.json` sin migrar (D-10); huérfanas con `orphanCount` (D-5).
-4. **Worker:** interfaz `Engine.run` (D-9), desalojo de Ollama al tomar el candado (D-7) y espera de memoria
-   cancelable dentro del candado (D-8), con `ProfileLoader` sobre `machine_profiles/` (D-12).
-5. **`grun doctor`** (D-15).
+| Id | Paso | Estado |
+|---|---|---|
+| R1.1 | **Soporte:** rutas (D-1, con `GALIVELOP_STATE_HOME` y el alias `GVOICE_STATE_HOME`), límites, errores con i18n y los códigos de D-14, escritura atómica y registro | pendiente |
+| R1.2 | **Candado de máquina:** el `machine_lock` de gvoice, con su titular y `held_fds` | pendiente |
+| R1.3 | **Cola:** la de gvoice más lo general de gimg (D-6): lotes, `move`, pausa, progreso, vista previa, `held`; orden por posición y luego id (D-4); `<data>/queue.json` sin migrar (D-10); huérfanas con `orphanCount` (D-5) | pendiente |
+| R1.4 | **Worker:** interfaz `Engine.run` (D-9), desalojo de Ollama al tomar el candado (D-7) y espera de memoria cancelable dentro del candado (D-8), con `ProfileLoader` sobre `machine_profiles/` (D-12) | pendiente |
+| R1.5 | **`grun doctor`** (D-15) | pendiente |
 
 El desalojo entra en `0.1`, no en `0.4`: gvoice retira su script en R3 (D-7) y necesita que `grun` ya lo haga.
 `0.4` solo añade el turno de Ollama para los procesos que no son Python.
