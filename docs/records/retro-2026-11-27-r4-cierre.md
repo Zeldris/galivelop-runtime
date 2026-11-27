@@ -1,6 +1,6 @@
 # Retro: cierre de `0.3` (R4.1-R4.4)
 
-**Estado:** pendiente de la decisión de la persona.
+**Estado:** decidida: P4 aprobada y aplicada; P3 aprobada (queda para el workflow); P1 aprobada y anotada para `0.4`; P2 aplazada.
 
 Fuentes: `measure.py` del tramo tras el último `/clear` (10 llamadas, contexto medio 91 983, 920 k de entrada, 97 % de caché; arranque fijo ~80 510 por llamada, 88 %), `pending.md`, `git log origin/main..HEAD`. `task.py deviations` no da nada: no hay `plan` en `gw.json`. No hay `.claude/gw/retro.md`.
 
@@ -26,4 +26,4 @@ Fuentes: `measure.py` del tramo tras el último `/clear` (10 llamadas, contexto 
 
 ## Decisión
 
-Sin decidir: la persona elige entre P1-P4.
+La persona aprobó las recomendaciones (5-8): P1 anotada en `pending.md` para una tarea de `0.4` sin tocar `queue.py` ahora; P2 aplazada; P3 en `## For Galivelop-workflow`; P4 aplicada (`plan: ["docs/roadmap.md"]`, `taskId: R\d+\.\d+` en `gw.json`; `handoff.py next-id` pide el prefijo con punto, p. ej. `R5.`).
