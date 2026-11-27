@@ -11,7 +11,7 @@
 | **Rama** | `ccr-2447cc83-5kxr8j` |
 | **Fase / tarea** | `0.2` (R3): R3.1 hecho y revisado (1 medio arreglado, leves en pendientes). `0.1` (R1) completo y revisado. Presupuesto de compactaciones: 0 |
 | **Último punto estable** | este commit: `grun vendor` (R3.1). Antes, `1fc3c8a` (CI verde). |
-| **Siguiente paso** | Fase 2 (gw-opt-tokens y retro, se presentan a la persona) y fase 3 para `0.1`+R3.1. R3.2 (alias) espera a la sesión de gvoice (`session_01VdeHm9ESLr7pEB8izbfdt1`). Antes de `main` (`0.1`+`0.2`), las fases 2 y 3 y la etiqueta `v0.1.0`. |
+| **Siguiente paso** | Esperar la decisión de la persona sobre P1-P4 de `docs/records/retro-2026-11-27-r3-1.md` (recomendación: 1 aplicada, 2 sí, 3 sí para después de `0.1`, 4 al archivo de la retro). Con ella: escribir el `**Estado:**` de la retro, aplicar lo aprobado, `bash .claude/gw/scripts/reviewed.sh`, `push` y la descripción del PR (skill `pr`) para `0.1`+R3.1; etiqueta `v0.1.0`. R3.2 espera a la sesión de gvoice (`session_01VdeHm9ESLr7pEB8izbfdt1`). Fase 1 hecha, fase 2 presentada. |
 | **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (294 tests). |
 
 ## Autoría
