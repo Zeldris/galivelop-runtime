@@ -72,6 +72,7 @@
   "error.vendor.not_vendored": "{path} exists and is not a vendored grun copy (it has no VENDOR.json): nothing was touched",
   "error.worker.already_running": "a worker is already running ({path})",
   "error.worker.unexpected": "unexpected worker error: {message}",
+  "launcher.failed": "could not launch the worker: {reason}",
   "worker.finish_failed": "could not finish queue entry {id}: {reason}",
   "worker.log_failed": "could not write the log line of entry {id}: {reason}",
   "worker.waiting_memory": "entry {id} is waiting for memory: {free} MB are free and the profile asks for {min} MB"

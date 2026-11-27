@@ -72,6 +72,7 @@
   "error.vendor.not_vendored": "{path} existe y no es una copia vendorizada de grun (no tiene VENDOR.json): no se ha tocado nada",
   "error.worker.already_running": "ya hay un trabajador en marcha ({path})",
   "error.worker.unexpected": "error inesperado del trabajador: {message}",
+  "launcher.failed": "no se pudo lanzar el trabajador: {reason}",
   "worker.finish_failed": "no se pudo cerrar la entrada {id} de la cola: {reason}",
   "worker.log_failed": "no se pudo escribir la línea del registro de la entrada {id}: {reason}",
   "worker.waiting_memory": "la entrada {id} espera memoria: hay {free} MB libres y el perfil pide {min} MB"

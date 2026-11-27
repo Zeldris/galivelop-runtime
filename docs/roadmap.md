@@ -54,7 +54,7 @@ l.275-286, rutas de cola, `health` l.381-390).
 |---|---|---|
 | R4.1 | **Servidor base** (`grun/server.py`, D-2): bind solo a `127.0.0.1`, comprobación de `Host`/`Origin`/`Sec-Fetch-Site` (`net.non_local_host`, invariante 11), `serve.lock` + `serve.json`, tabla error→HTTP genérica con tabla de la aplicación inyectable, `health` y rutas de cola (listar, vista previa, cancelar, mover, lotes, pausa, `clear`) | hecha (`docs/tasks/R4.1.md`) |
 | R4.2 | **Ganchos de cola** (D-6): `Checks` (validación antes de encolar) y `Estimate` (`estimateMs` en la vista); `held` y `clean_pending` ya existen | hecho (2026-11-27) |
-| R4.3 | **Lanzador** (`grun/launcher.py`, D-11): `maybe_launch(queue, command, log, ...)` desde `maybe_launch_worker`, con la cola y el comando inyectados | pendiente |
+| R4.3 | **Lanzador** (`grun/launcher.py`, D-11): `maybe_launch(queue, command, log, ...)` desde `maybe_launch_worker`, con la cola y el comando inyectados | hecha (`docs/tasks/R4.3.md`) |
 | R4.4 | **Invariante 13:** respuestas de `/api/queue` fijadas como ejemplo y validadas contra `grun.queue/0` | pendiente |
 
 Bloqueo externo: R2 (gimg con `machine_lock.py` y `held_fds`) no está en el checkout de gimg; sin él, «gimg borra su
