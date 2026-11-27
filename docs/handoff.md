@@ -11,7 +11,7 @@
 | **Rama** | `ccr-2447cc83-5kxr8j` |
 | **Fase / tarea** | `0.2` (R3): R3.1 hecho y revisado, R3.3 hecho (sin revisar); `0.1` fusionada en `main`. `0.1` (R1) completo y revisado. Presupuesto de compactaciones: 0 |
 | **Último punto estable** | este commit: `grun vendor` (R3.1). Antes, `1fc3c8a` (CI verde). |
-| **Siguiente paso** | Cierre de `0.2`: R3.1-R3.3 hechas y revisadas (R3.2 en sesión, diff trivial). Retro escrita (`docs/records/retro-2026-11-27-r3-cierre.md`, `Estado: pendiente`): falta la decisión de la persona sobre P1-P3; luego `reviewed.sh` y, con confirmación, a `main`. D-7 en gvoice queda pendiente de la persona. |
+| **Siguiente paso** | Cierre de `0.2`: retro decidida y aplicada. Falta confirmación de la persona para `reviewed.sh` y subir a `main`; D-7 en gvoice pendiente de la persona (`pending.md`). Después, `0.3` (R4). |
 | **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (306 tests). |
 
 ## Autoría

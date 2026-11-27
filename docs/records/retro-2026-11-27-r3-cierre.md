@@ -1,6 +1,6 @@
 # Retro cierre de `0.2` (R3) (2026-11-27)
 
-**Estado:** pendiente de la decisión de la persona.
+**Estado:** decidida el 2026-11-27 (la persona aprueba las recomendaciones): P1 aprobada y aplazada a `0.3`, P2 aprobada y apuntada como pendiente de la persona, P3 aprobada y dejada en esta retro para `gw-harvest`.
 
 Sesión tras el `/clear`: R3.2 revisado en sesión (diff trivial: ≈10 líneas de código, correcto, el test falla sin el
 arreglo) y fase 2. R3.1 y R3.3 ya tuvieron revisión de bloque y retro (`retro-2026-11-27-r3-1.md`).
