@@ -35,6 +35,13 @@ uno usa los anteriores). El estado se marca con `python3 .claude/gw/scripts/road
 El desalojo entra en `0.1`, no en `0.4`: gvoice retira su script en R3 (D-7) y necesita que `grun` ya lo haga.
 `0.4` solo añade el turno de Ollama para los procesos que no son Python.
 
+## `0.2` «Vendorizado» (R3)
+
+| Id | Paso | Estado |
+|---|---|---|
+| R3.1 | **`grun vendor`:** copia con `VENDOR.json` y huella sha256, y su verificación (`docs/tasks/R3.1.md`) | hecho (2026-11-27) |
+| R3.2 | **Alias `GVOICE_STATE_HOME` retirado** (D-1), cuando gvoice ya use `GALIVELOP_STATE_HOME` | pendiente |
+
 ## Bloqueos externos
 
 - La validación con gart espera a que gart tenga su registro; `gmod.machine/0` espera a gmod. Ninguno bloquea

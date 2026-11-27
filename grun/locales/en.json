@@ -54,6 +54,7 @@
   "error.queue.not_running": "entry {id} is not running (state: {state})",
   "error.queue.orphaned": "entry {id} was left running by a worker that died {count} times; it was closed as failed",
   "error.queue.unknown": "there is no queue entry {id}",
+  "error.vendor.not_vendored": "{path} exists and is not a vendored grun copy (it has no VENDOR.json): nothing was touched",
   "error.worker.already_running": "a worker is already running ({path})",
   "error.worker.unexpected": "unexpected worker error: {message}",
   "worker.finish_failed": "could not finish queue entry {id}: {reason}",
