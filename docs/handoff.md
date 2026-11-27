@@ -9,9 +9,9 @@
 | Campo | Valor |
 |---|---|
 | **Rama** | `ccr-2447cc83-5kxr8j` |
-| **Fase / tarea** | `0.1` (R1): R1.4 (worker) revisado: revisión de bloque hecha, 1 medio arreglado (Ollama no sigue redirecciones, invariante 11), 5 leves a `docs/records/pending.md`. Presupuesto de compactaciones: 0 |
-| **Último punto estable** | este commit: arreglo de la revisión de R1.4. Antes, R1.4 implementado (`29b697d`, `598963d`) y R1.3 revisado (`4cb110c`). |
-| **Siguiente paso** | R1.5: `grun doctor` (D-15), ver `docs/roadmap.md`. |
+| **Fase / tarea** | `0.1` (R1): R1.5 (`grun doctor`, D-15) en curso: ficha `docs/tasks/R1.5.md` escrita; un subagente `gw-worker` (sonnet) escribe `tests/test_doctor.py`, `grun/doctor.py` y `grun/__main__.py` sin commit. R1.4 ya revisado. Presupuesto de compactaciones: 0 |
+| **Último punto estable** | este commit: ficha de R1.5. Antes, arreglo de la revisión de R1.4 (`b01bc82`), R1.4 implementado (`29b697d`, `598963d`) y R1.3 revisado (`4cb110c`). |
+| **Siguiente paso** | Terminar R1.5: revisar el diff del worker (lectura pura, no crea archivos, no recupera huérfanas), check en verde, commit; luego revisión de bloque y R1 cerrado. Si no hay código del worker en el árbol, relanzarlo con la ficha. |
 | **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (252 tests). |
 
 ## Autoría
