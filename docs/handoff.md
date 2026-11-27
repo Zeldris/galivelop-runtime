@@ -11,7 +11,7 @@
 | **Rama** | `ccr-2447cc83-5kxr8j` |
 | **Fase / tarea** | `0.2` (R3): R3.1 hecho y revisado, R3.3 hecho (sin revisar); `0.1` fusionada en `main`. `0.1` (R1) completo y revisado. Presupuesto de compactaciones: 0 |
 | **Último punto estable** | este commit: `grun vendor` (R3.1). Antes, `1fc3c8a` (CI verde). |
-| **Siguiente paso** | R3.2 hecho (alias `GVOICE_STATE_HOME` retirado de `grun/paths.py`, sin revisar). Siguiente: R3.3 resto / D-7 (script de desalojo de gvoice) y cierre de `0.2` (revisión, gw-opt-tokens, retro). |
+| **Siguiente paso** | Cierre de `0.2`: R3.1-R3.3 hechas y revisadas (R3.2 en sesión, diff trivial). Retro escrita (`docs/records/retro-2026-11-27-r3-cierre.md`, `Estado: pendiente`): falta la decisión de la persona sobre P1-P3; luego `reviewed.sh` y, con confirmación, a `main`. D-7 en gvoice queda pendiente de la persona. |
 | **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (306 tests). |
 
 ## Autoría

@@ -29,6 +29,9 @@ las crea una vez; desde entonces son del proyecto.
   fijo ~80 341 por llamada (72 %). Revisor `gw-reviewer` (sonnet): 4 llamadas, 131 k. El roadmap se leyó 3 veces con
   `sed`: usar `roadmap.py show|list|done`.
 
+- 2026-11-27, cierre de `0.2` (tras `/clear`): 6 llamadas, contexto medio 90 671, 544 k de entrada (96 % de caché);
+  arranque fijo ~80 171 por llamada (88 %). Sin lecturas repetidas ni subagentes.
+
 ## Costes conocidos que no se pueden quitar
 
 - El arranque fijo de los conectores (`Claude_Docs`, `github`, `claude-code-remote`): en Claude cloud no se pueden
