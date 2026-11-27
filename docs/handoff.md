@@ -8,11 +8,11 @@
 
 | Campo | Valor |
 |---|---|
-| **Rama** | `ccr-2447cc83-5kxr8j` |
-| **Fase / tarea** | `0.2` (R3): R3.1 hecho y revisado; `0.1` fusionada en `main`. `0.1` (R1) completo y revisado. Presupuesto de compactaciones: 0 |
-| **Último punto estable** | este commit: `grun vendor` (R3.1). Antes, `1fc3c8a` (CI verde). |
-| **Siguiente paso** | PR #3 fusionado en `main` (`90c468b`, CI verde, `__version__` 0.1.0). Pendiente de la persona: subir la etiqueta `v0.1.0` a `90c468b` (el push de etiquetas falla desde la sesión: `git tag -a v0.1.0 90c468b -m v0.1.0 && git push origin v0.1.0`, o una release en GitHub). Después: R3.2 (alias) cuando devuelva la sesión de gvoice (`session_01VdeHm9ESLr7pEB8izbfdt1`) y R3.3 (barrido de leves). |
-| **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (294 tests). |
+| **Rama** | `claude/release-v0.1.0` |
+| **Fase / tarea** | `0.1` (R1) publicada: etiqueta `v0.1.0` en `90c468b` y release en GitHub. `0.2` (R3): R3.1 hecho y revisado. Presupuesto de compactaciones: 0 |
+| **Último punto estable** | `v0.1.0` (`90c468b`), publicada el 2026-11-27. En `90c468b` no corre CI (push a `main`); el CI verde es el del PR #3, sobre `27b32c5` (mismo árbol). |
+| **Siguiente paso** | Arreglar el test que falla con locale en español y el estado del README (`pending.md`), en rama y PR a `main`. Luego R3.2 (alias) cuando devuelva la sesión de gvoice (`session_01VdeHm9ESLr7pEB8izbfdt1`) y R3.3 (barrido de leves). |
+| **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde en CI y con `LC_ALL=C.UTF-8` (294 tests); con `es_ES.UTF-8`, 1 falla. |
 
 ## Autoría
 
