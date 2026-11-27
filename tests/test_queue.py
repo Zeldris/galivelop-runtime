@@ -307,6 +307,11 @@ class AtomicTests(QueueBase):  # invariant 10
                 self.q.claim()
         self.assertEqual(self.q.get(1)["state"], "queued")
 
+    def test_a_file_nested_too_deep_is_corrupt(self):
+        paths.queue_path(self.data).parent.mkdir(parents=True)
+        paths.queue_path(self.data).write_text("[" * 100000, encoding="utf-8")
+        self.assertEqual(self.code(self.q.list_entries), "queue.corrupt")
+
     def test_corrupt_file(self):
         paths.queue_path(self.data).parent.mkdir(parents=True)
         paths.queue_path(self.data).write_text("{nope", encoding="utf-8")

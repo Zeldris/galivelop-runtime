@@ -10,7 +10,6 @@ from pathlib import Path
 from .errors import PathError
 
 STATE_ENV = "GALIVELOP_STATE_HOME"
-STATE_ENV_ALIAS = "GVOICE_STATE_HOME"  # TODO(R3): remove the alias when gvoice migrates to grun
 
 
 def _xdg_base(xdg: str):
@@ -62,10 +61,10 @@ def data_dir(folder: str, env_prefix: str) -> Path:
 
 
 def state_dir() -> Path:
-    """State shared by the Galivelop applications of one machine (D-1): ``$GALIVELOP_STATE_HOME``, else the alias
-    ``$GVOICE_STATE_HOME`` (relative values are ignored), else ``$XDG_STATE_HOME/galivelop``, else ``~/.local/state/galivelop``. The folder is
+    """State shared by the Galivelop applications of one machine (D-1): ``$GALIVELOP_STATE_HOME``
+    (relative values are ignored), else ``$XDG_STATE_HOME/galivelop``, else ``~/.local/state/galivelop``. The folder is
     the same for every application, so they share the machine lock."""
-    explicit = _absolute_env(STATE_ENV, STATE_ENV_ALIAS)
+    explicit = _absolute_env(STATE_ENV)
     if explicit:
         return Path(explicit)
     base = _xdg_base("XDG_STATE_HOME")

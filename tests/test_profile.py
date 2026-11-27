@@ -80,7 +80,7 @@ class ResolutionTests(ProfileBase):
 
 class ErrorTests(ProfileBase):
     def test_bad_names(self):
-        for name in ("Steam", "-x", "a b", "a_b", ".x"):
+        for name in ("Steam", "-x", "a b", "a_b", ".x", "steam-deck\n"):
             self.assertEqual(self.error(name).code, "machine.bad_name", name)
         self.assertEqual(self.error("UPPER").params["name"], "UPPER")
 
@@ -89,6 +89,16 @@ class ErrorTests(ProfileBase):
         self.assertEqual(err.code, "machine.missing")
         self.assertTrue(err.params["path"].endswith("nothing.json"))
         self.assertEqual(self.error(str(self.tmp / "no.json")).code, "machine.missing")
+
+    def test_too_deep_json_is_unreadable_or_no_setting(self):
+        self.preset("steam-deck")
+        deep = "[" * 100000
+        path = self.tmp / "deep.json"
+        self.write(path, deep)
+        err = self.error(str(path))
+        self.assertEqual(err.code, "machine.unreadable")
+        config = self.write(self.tmp / "config.json", deep)
+        self.assertEqual(self.load(config_path=config)["name"], "steam-deck")
 
     def test_unreadable(self):
         for text in ("{not json", "", b"\xff\xfe"):

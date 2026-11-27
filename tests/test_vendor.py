@@ -6,6 +6,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from grun import __version__, vendor
 from grun.errors import GrunError
@@ -25,6 +26,24 @@ class VendorTests(unittest.TestCase):
 
     def export(self):
         return vendor.export(self.dest, source="test@abc")
+
+    def test_failed_swap_keeps_the_old_copy(self):
+        self.export()
+        target = self.dest / "grun"
+        before = vendor.collect(target)
+        real = Path.rename
+
+        def flaky(self_, to):
+            if self_.name.startswith(".grun.tmp-"):
+                raise OSError("boom")
+            return real(self_, to)
+        with mock.patch.object(Path, "rename", flaky):
+            with self.assertRaises(OSError) as cm:
+                self.export()
+        self.assertIn("boom", str(cm.exception))
+        self.assertEqual(vendor.collect(target), before)
+        self.assertEqual(vendor.verify(target), [])
+        self.assertEqual(sorted(p.name for p in self.dest.iterdir()), ["grun"])
 
     def test_export_copies_the_package_and_writes_the_manifest(self):
         manifest = self.export()
@@ -86,6 +105,48 @@ class VendorTests(unittest.TestCase):
                     json.dumps({"schema": vendor.SCHEMA, "files": {"a.py": 3}})):
             (t / "VENDOR.json").write_text(bad)
             self.assertEqual(codes(vendor.verify(t)), [("vendor.bad_manifest", None)], bad)
+
+    def test_a_manifest_nested_too_deep_is_bad_manifest(self):
+        t = self.dest / "grun"
+        t.mkdir()
+        (t / "VENDOR.json").write_text("[" * 100000)
+        self.assertEqual(codes(vendor.verify(t)), [("vendor.bad_manifest", None)])
+
+    def test_an_unreadable_py_is_a_controlled_error(self):
+        self.export()
+        t = self.dest / "grun"
+        real = Path.read_bytes
+
+        def read_bytes(path):
+            if path.name == "paths.py":
+                raise PermissionError("denied")
+            return real(path)
+        with mock.patch.object(Path, "read_bytes", read_bytes):
+            self.assertEqual(codes(vendor.verify(t)), [("vendor.unreadable", str(t / "paths.py"))])
+            with self.assertRaises(GrunError) as cm:
+                vendor.collect(t)
+        self.assertEqual(cm.exception.code, "vendor.unreadable")
+
+    def test_a_pinned_fingerprint_in_capitals_matches(self):
+        manifest = self.export()
+        self.assertEqual(vendor.verify(self.dest / "grun", pinned=manifest["fingerprint"].upper()), [])
+
+    def test_a_broken_symlink_at_the_target_is_refused_and_left_alone(self):
+        (self.dest / "grun").symlink_to(self.dest / "nowhere")
+        with self.assertRaises(GrunError) as cm:
+            self.export()
+        self.assertEqual(cm.exception.code, "vendor.not_vendored")
+        self.assertTrue((self.dest / "grun").is_symlink())
+
+    def test_a_failure_half_way_leaves_the_old_copy_and_no_temporary(self):
+        self.export()
+        before = vendor.collect(self.dest / "grun")
+        with mock.patch("grun.vendor.shutil.copyfile", side_effect=OSError("disk full")):
+            with self.assertRaises(OSError):
+                self.export()
+        self.assertEqual(vendor.verify(self.dest / "grun"), [])
+        self.assertEqual(vendor.collect(self.dest / "grun"), before)
+        self.assertEqual([p.name for p in self.dest.iterdir()], ["grun"])
 
     def test_exporting_again_replaces_a_vendored_copy(self):
         self.export()
@@ -169,8 +230,12 @@ class VendorCliTests(unittest.TestCase):
         self.assertIn("grun vendor:", err)
 
     def test_bad_usage_exits_2(self):
-        self.assertEqual(self.run_cli()[0], 2)
-        self.assertEqual(self.run_cli("--dest", "a", "--verify", "b")[0], 2)
+        code, _, err = self.run_cli()
+        self.assertEqual(code, 2)
+        self.assertIn("one of the arguments --dest --verify is required", err)
+        code, _, err = self.run_cli("--dest", "a", "--verify", "b")
+        self.assertEqual(code, 2)
+        self.assertIn("not allowed with argument", err)
         code, _, err = self.run_cli("--dest", str(self.dest), "--pinned", "x")
         self.assertEqual((code, "--pinned needs --verify" in err), (2, True))
 
@@ -178,8 +243,12 @@ class VendorCliTests(unittest.TestCase):
         run = lambda *a: subprocess.run([sys.executable, "-m", "grun", *a], cwd=ROOT, capture_output=True, text=True)
         out = run("vendor", "--dest", str(self.dest))
         self.assertEqual(out.returncode, 0, out.stderr)
-        self.assertEqual(run("vendor").returncode, 2)
-        self.assertEqual(run("doctor").returncode, 2)
+        out = run("vendor")
+        self.assertEqual(out.returncode, 2)
+        self.assertIn("grun vendor: error: one of the arguments --dest --verify is required", out.stderr)
+        out = run("doctor")
+        self.assertEqual(out.returncode, 2)
+        self.assertIn("grun doctor: error: the following arguments are required: --data", out.stderr)
 
 
 if __name__ == "__main__":
