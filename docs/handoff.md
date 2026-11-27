@@ -9,10 +9,10 @@
 | Campo | Valor |
 |---|---|
 | **Rama** | `ccr-2447cc83-5kxr8j` |
-| **Fase / tarea** | `0.1` (R1): R1.5 (`grun doctor`, D-15) implementado, sin revisar. R1 completo (R1.1-R1.5). Presupuesto de compactaciones: 0 |
-| **Último punto estable** | este commit: `grun doctor` (R1.5). Antes, ficha de R1.5 (`710047d`) y arreglo de la revisión de R1.4 (`b01bc82`). |
-| **Siguiente paso** | Revisión de bloque del diff de R1.5 (desde `b01bc82`, `Findings:`), cerrar R1 y empezar `0.2` (R2) según `docs/roadmap.md`. |
-| **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (276 tests). |
+| **Fase / tarea** | `0.1` (R1): R1 completo (R1.1-R1.5); R1.5 revisada (1 medio arreglado, leves en pendientes). Presupuesto de compactaciones: 0 |
+| **Último punto estable** | este commit: arreglo de la revisión de R1.5 (`doctor` no lanza con carpeta sin permiso). Antes, `grun doctor` (`fd52a9f`). |
+| **Siguiente paso** | Revisión de R1 cerrada; comprobar el CI de este commit y empezar `0.2` (R3: vendorizado de `grun` en gvoice) según `docs/roadmap.md`. Antes de `main`, las fases 2 y 3. |
+| **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (277 tests). |
 
 ## Autoría
 

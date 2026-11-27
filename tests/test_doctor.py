@@ -69,6 +69,18 @@ class DoctorBase(unittest.TestCase):
 
 
 class DiagnoseTests(DoctorBase):
+    def test_unsearchable_folder_does_not_raise(self):
+        real = Path.exists
+
+        def denied(path):
+            if str(path).startswith(str(self.data)):
+                raise PermissionError(13, "denied")
+            return real(path)
+
+        with mock.patch.object(Path, "exists", denied):
+            report = doctor.diagnose(self.data)
+        self.assertIs(report["queue"]["paused"], False)
+        self.assertTrue(all(lock["exists"] is False for lock in report["locks"]))
     def test_nothing_created_nothing_written(self):
         self.tmp.joinpath("data").mkdir()
         before = tree(self.tmp)

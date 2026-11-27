@@ -33,6 +33,14 @@ def _pos(entry: dict):
     return (pos if isinstance(pos, (int, float)) and not isinstance(pos, bool) else entry["id"], entry["id"])
 
 
+def _exists(path: Path) -> bool:
+    """`path.exists()` that is False, not an exception, when the folder cannot be searched (EACCES)."""
+    try:
+        return path.exists()
+    except OSError:
+        return False
+
+
 def _read_queue(path: Path):
     """``(exists, entries or None, error code or None)`` without creating anything."""
     try:
@@ -63,7 +71,7 @@ def diagnose(data, *, app: str | None = None) -> dict:
     for entry in entries or ():
         counts[entry["state"]] = counts.get(entry["state"], 0) + 1
     queue = {"path": str(qpath), "exists": exists, "readable": error is None,
-             "paused": paths.pause_path(data).exists(), "counts": counts,
+             "paused": _exists(paths.pause_path(data)), "counts": counts,
              "queued": [e["id"] for e in sorted((e for e in entries or () if e["state"] == "queued"), key=_pos)],
              "running": sorted(e["id"] for e in entries or () if e["state"] == "running"), "error": error}
     if error:
@@ -72,7 +80,7 @@ def diagnose(data, *, app: str | None = None) -> dict:
     locks = []
     for name, locate in LOCKS:
         path = locate(data)
-        locks.append({"name": name, "path": str(path), "held": fsutil.held(path), "exists": path.exists()})
+        locks.append({"name": name, "path": str(path), "held": fsutil.held(path), "exists": _exists(path)})
         if locks[-1]["held"] is None:
             problems.append({"code": "doctor.lock_unknown", "params": {"name": name, "path": str(path)}})
 
