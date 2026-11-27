@@ -200,3 +200,24 @@ file (format: header of scripts/questions.py). Answer by number: `questions.py a
 - Recommendation: Sí
 - Answer: ok
 - Answered: 2026-11-26
+
+## Q-23
+- Refs: 0.4
+- Status: open
+- Asked: 2026-11-27
+- Question: 0.4 · ¿Qué leves de queue.py barro primero? Son 6: stop_batch con True==1, enqueue con generadores, _number acepta inf, poda por llegada, checks que devuelve "", items recorrido dos veces. ¿Entran todos?
+- Recommendation: Sí, los 6: son pequeños, comparten archivo y cada uno lleva test rojo sin arreglo.
+
+## Q-24
+- Refs: 0.4
+- Status: open
+- Asked: 2026-11-27
+- Question: 0.4 · ¿Entran también los leves de machine_lock.py (busy() con EACCES, hold() no reentrante) y fsutil.held() (ENOLCK)?
+- Recommendation: Sí, después de queue.py y como segundo commit: son los de peor consecuencia (EACCES = «libre», ENOLCK = worker vivo para siempre).
+
+## Q-25
+- Refs: 0.4
+- Status: open
+- Asked: 2026-11-27
+- Question: 0.4 · ¿Tras el barrido sigo con R5 del roadmap (protocolo grun.lock/1, D-13, y turno de Ollama, D-3)?
+- Recommendation: Sí: el roadmap lo marca como 0.4 (R5, protocolo grun.lock/1 y flock en ollamaQueue.ts de WMF); empezar por el protocolo en este repo, WMF lo integra la persona o su sesión.
