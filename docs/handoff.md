@@ -9,10 +9,10 @@
 | Campo | Valor |
 |---|---|
 | **Rama** | `ccr-2447cc83-5kxr8j` |
-| **Fase / tarea** | `0.1` (R1): R1.4 (worker) en curso: ficha `docs/tasks/R1.4.md` escrita; falta el código. Presupuesto de compactaciones: 0 |
-| **Último punto estable** | este commit: ficha de R1.4. Antes, R1.3 con los arreglos de su revisión (`4cb110c`). |
-| **Siguiente paso** | R1.4: implementar la ficha (`engine.py`, `ollama.py`, `profile.py`, `worker.py` y sus tests) con un subagente `gw-worker`, y revisar su diff. |
-| **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (162 tests). |
+| **Fase / tarea** | `0.1` (R1): R1.4 (worker) implementado (`29b697d`, `598963d`), sin revisar. Presupuesto de compactaciones: 0 |
+| **Último punto estable** | este commit: R1.4 con sus tests (252). Antes, la ficha (`2ba6c9c`) y R1.3 revisado (`4cb110c`). |
+| **Siguiente paso** | Revisión de bloque de R1.4 con `gw-reviewer` en contexto limpio: diff `4cb110c..HEAD` (~1600 líneas), criterio de `REVIEW.md`, «no informes de lo que ya está en `docs/records/pending.md`»; arreglos a `gw-worker` sonnet; commit con `Findings:`. Luego R1.5. |
+| **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (252 tests). |
 
 ## Autoría
 
@@ -26,11 +26,11 @@ La rama se reescribió el 2026-11-27 (autor y firmas) con permiso de la persona;
 
 ## Hecho (5 últimas)
 
-1. 2026-11-27 — R1.3: cola (`grun/queue.py`) con los tests de las invariantes 7-10 y 12.
-2. 2026-11-27 — R1.2: candado de máquina (`grun/machine_lock.py`) con titular `grun.lock/0` y tests de las invariantes 1-6.
-3. 2026-11-27 — F0 cerrada (PR #1 en `main`); `0.1` empieza con el roadmap activado.
-4. 2026-11-26 — F0: roadmap de versiones (`docs/roadmap.md`), enlazado desde §7 del DDD.
-5. 2026-11-26 — F-1 cerrada: las 17 preguntas de §8 respondidas (todas con la recomendación) y pasadas a «Decisiones» del DDD (D-1..D-17).
+1. 2026-11-27 — R1.4: worker (`grun/worker.py`), interfaz del motor, desalojo de Ollama y `ProfileLoader`, con tests de las invariantes 4, 9 y 11 (sin revisar).
+2. 2026-11-27 — R1.3: cola (`grun/queue.py`) con los tests de las invariantes 7-10 y 12.
+3. 2026-11-27 — R1.2: candado de máquina (`grun/machine_lock.py`) con titular `grun.lock/0` y tests de las invariantes 1-6.
+4. 2026-11-27 — F0 cerrada (PR #1 en `main`); `0.1` empieza con el roadmap activado.
+5. 2026-11-26 — F0: roadmap de versiones (`docs/roadmap.md`), enlazado desde §7 del DDD.
 
 ## Pendiente
 
