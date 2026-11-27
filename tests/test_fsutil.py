@@ -1,6 +1,7 @@
 import json
 import multiprocessing
 import os
+import stat
 import tempfile
 import unittest
 from pathlib import Path
@@ -83,3 +84,77 @@ class FsutilTests(unittest.TestCase):
             pr.join()
             self.assertEqual(pr.exitcode, 0)
         self.assertEqual(fsutil.read_json(p)["n"], 100)
+
+
+def _open_fds():
+    return len(os.listdir("/proc/self/fd"))
+
+
+@unittest.skipUnless(os.path.isdir("/proc/self/fd"), "needs /proc/self/fd")
+class WriteJsonFdTests(unittest.TestCase):
+    def setUp(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        self.dir = Path(tmp.name)
+
+    def test_failed_fchmod_closes_the_temp_fd(self):
+        before = _open_fds()
+        with mock.patch.object(fsutil, "honour_umask", side_effect=OSError("fchmod boom")):
+            with self.assertRaisesRegex(OSError, "fchmod boom"):
+                fsutil.write_json(self.dir / "a.json", {})
+        self.assertEqual(_open_fds(), before)
+        self.assertEqual(list(self.dir.iterdir()), [])
+
+    def test_failed_fdopen_closes_the_temp_fd(self):
+        before = _open_fds()
+        with mock.patch("os.fdopen", side_effect=OSError("fdopen boom")):
+            with self.assertRaisesRegex(OSError, "fdopen boom"):
+                fsutil.write_json(self.dir / "a.json", {})
+        self.assertEqual(_open_fds(), before)
+        self.assertEqual(list(self.dir.iterdir()), [])
+
+
+class WriteJsonDurabilityTests(unittest.TestCase):
+    def setUp(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        self.dir = Path(tmp.name)
+
+    def test_parent_folder_is_fsynced_after_replace(self):
+        synced = []
+        real = os.fsync
+
+        def spy(fd):
+            synced.append(stat.S_ISDIR(os.fstat(fd).st_mode))
+            return real(fd)
+
+        with mock.patch("os.fsync", side_effect=spy):
+            fsutil.write_json(self.dir / "a.json", {"v": 1})
+        self.assertEqual(synced, [False, True])
+
+    def test_folder_that_cannot_be_opened_is_tolerated(self):
+        real = os.open
+
+        def no_dirs(path, flags, *a, **kw):
+            if os.path.isdir(path):
+                raise PermissionError("no folders here")
+            return real(path, flags, *a, **kw)
+
+        with mock.patch("os.open", side_effect=no_dirs):
+            fsutil.write_json(self.dir / "a.json", {"v": 1})
+        self.assertEqual(json.loads((self.dir / "a.json").read_text()), {"v": 1})
+
+
+class UmaskTests(unittest.TestCase):
+    def test_write_does_not_touch_the_process_umask(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        p = Path(tmp.name) / "m.json"
+        old = os.umask(0o027)
+        try:
+            with mock.patch("os.umask", side_effect=AssertionError("umask changed during write")):
+                fsutil.write_json(p, {})
+        finally:
+            os.umask(old)
+        if os.path.exists("/proc/self/status"):
+            self.assertEqual(os.stat(p).st_mode & 0o777, 0o640)

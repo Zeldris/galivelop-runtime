@@ -92,5 +92,12 @@ class DefaultLangTests(unittest.TestCase):
         self.check({}, "en")
 
 
+class FormatTests(unittest.TestCase):
+    def test_missing_parameter_keeps_the_placeholder(self):
+        self.assertEqual(i18n.t("error.path.outside", "en"), load("en")["error.path.outside"])
+        self.assertIn("{path}", i18n.t("error.path.outside", "es"))
+        self.assertIn('"x/y"', i18n.t("error.path.outside", "en", path="x/y"))
+
+
 if __name__ == "__main__":
     unittest.main()

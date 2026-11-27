@@ -28,7 +28,7 @@ def append(path, record: dict) -> None:
 def lines(path):
     """Yield the JSON objects of the log file `path`; a missing file is empty and bad lines are skipped."""
     try:
-        fh = open(path, encoding="utf-8")
+        fh = open(path, encoding="utf-8", errors="replace")  # an invalid byte spoils its line only
     except FileNotFoundError:
         return
     with fh:

@@ -9,10 +9,10 @@
 | Campo | Valor |
 |---|---|
 | **Rama** | `ccr-2447cc83-5kxr8j` |
-| **Fase / tarea** | `0.1` (R1): R1.1 hecho; antes de R1.2, revisión del bloque (el commit de R1.1 pasó de 1000 líneas). |
+| **Fase / tarea** | `0.1` (R1): R1.1 hecho y revisado (bloque `43556bc..d5b2b12`: 5 importantes arreglados, 5 leves en pendientes). |
 | **Último punto estable** | R1.1 (`d5b2b12`): paquete `grun` con `paths`, `limits`, `errors`, `i18n` (+ `locales` en/es), `fsutil`, `log`; 65 tests. Lo que se dejó fuera de gvoice y las decisiones propias, en el cuerpo de ese commit y en «Pendiente». |
-| **Siguiente paso** | Revisión de bloque de `43556bc..d5b2b12` (`/code-review --max-findings all`, criterio de `REVIEW.md`) y commit con `Findings:`; luego R1.2 (candado de máquina). |
-| **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (65 tests). |
+| **Siguiente paso** | R1.2 (candado de máquina). |
+| **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (74 tests). |
 
 ## Autoría
 

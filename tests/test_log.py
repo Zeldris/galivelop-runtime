@@ -60,6 +60,15 @@ class LogTests(unittest.TestCase):
         self.assertEqual(log.estimate(self.path, **{MODEL: "m1"}), 10)
         self.assertEqual(len(list(log.lines(self.path))), 4)
 
+    def test_invalid_utf8_line_is_skipped_not_raised(self):
+        self.put(line(10))
+        with open(self.path, "ab") as fh:
+            fh.write(b'{"a": "\xff\xfe"}\n\xc3(bad\n')
+        self.put(line(20))
+        self.assertEqual(log.estimate(self.path, **{MODEL: "m1"}), 15)
+        good = [x for x in log.lines(self.path) if MODEL in x]
+        self.assertEqual([x["app.duration_ms"] for x in good], [10, 20])
+
 
 if __name__ == "__main__":
     unittest.main()

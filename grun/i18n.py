@@ -50,10 +50,22 @@ def _load(lang: str) -> dict:
     return _cache[lang]
 
 
+class _Keep(dict):
+    """Parameters for `format_map`: a missing name keeps its ``{name}`` placeholder."""
+
+    def __missing__(self, name):
+        return "{" + name + "}"
+
+
 def t(key: str, lang: str | None = None, **params) -> str:
+    """Text of `key` in `lang` (else the fallback, else the key) filled with `params`; a placeholder without its
+    parameter stays as it is, and a text that cannot be formatted is returned raw."""
     lang = lang or default_lang()
     for candidate in (lang, FALLBACK):
         text = _load(candidate).get(key)
         if text is not None:
-            return text.format(**params)
+            try:
+                return text.format_map(_Keep(params))
+            except (KeyError, IndexError, ValueError, AttributeError, TypeError):
+                return text
     return key

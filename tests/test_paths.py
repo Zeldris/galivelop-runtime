@@ -183,5 +183,20 @@ class InsideTests(unittest.TestCase):
         self.assertNotEqual(err.message("es"), err.message("en"))
 
 
+class RelativeExplicitTests(unittest.TestCase):
+    """A relative explicit folder would depend on the working directory: it is ignored, like a relative XDG one."""
+
+    def test_relative_config_and_data_ignored(self):
+        with env(GVOICE_CONFIG_HOME="rel", GVOICE_DATA_HOME="./d", XDG_DATA_HOME="/y"):
+            self.assertEqual(paths.config_dir(*APP), Path("/h/.config/galivelop-voice"))
+            self.assertEqual(paths.data_dir(*APP), Path("/y/galivelop-voice"))
+
+    def test_relative_state_ignored_and_falls_to_the_next(self):
+        with env(GALIVELOP_STATE_HOME="rel", GVOICE_STATE_HOME="/old"):
+            self.assertEqual(paths.state_dir(), Path("/old"))
+        with env(GALIVELOP_STATE_HOME="rel", GVOICE_STATE_HOME="old", XDG_STATE_HOME="/xdg"):
+            self.assertEqual(paths.machine_lock_path(), Path("/xdg/galivelop/gpu.lock"))
+
+
 if __name__ == "__main__":
     unittest.main()
