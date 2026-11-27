@@ -27,6 +27,24 @@ class VendorTests(unittest.TestCase):
     def export(self):
         return vendor.export(self.dest, source="test@abc")
 
+    def test_failed_swap_keeps_the_old_copy(self):
+        self.export()
+        target = self.dest / "grun"
+        before = vendor.collect(target)
+        real = Path.rename
+
+        def flaky(self_, to):
+            if self_.name.startswith(".grun.tmp-"):
+                raise OSError("boom")
+            return real(self_, to)
+        with mock.patch.object(Path, "rename", flaky):
+            with self.assertRaises(OSError) as cm:
+                self.export()
+        self.assertIn("boom", str(cm.exception))
+        self.assertEqual(vendor.collect(target), before)
+        self.assertEqual(vendor.verify(target), [])
+        self.assertEqual(sorted(p.name for p in self.dest.iterdir()), ["grun"])
+
     def test_export_copies_the_package_and_writes_the_manifest(self):
         manifest = self.export()
         target = self.dest / "grun"

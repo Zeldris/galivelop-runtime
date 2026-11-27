@@ -89,9 +89,20 @@ def export(dest: Path, *, source: str | None = None) -> dict:
         for name in files:
             shutil.copyfile(PACKAGE / name, tmp / name)
         (tmp / MANIFEST).write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        old = None
         if target.exists():
-            shutil.rmtree(target)
-        tmp.rename(target)
+            old = Path(dest) / (".grun.old-%d" % os.getpid())
+            if old.exists():
+                shutil.rmtree(old)
+            target.rename(old)
+        try:
+            tmp.rename(target)
+        except BaseException:
+            if old is not None:
+                old.rename(target)  # put the previous copy back
+            raise
+        if old is not None:
+            shutil.rmtree(old, ignore_errors=True)
     except BaseException:
         shutil.rmtree(tmp, ignore_errors=True)
         raise

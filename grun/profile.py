@@ -52,6 +52,8 @@ def _read_json(path):
             return json.load(fh)
     except FileNotFoundError:
         raise GrunError("machine.missing", path=str(path))
+    except RecursionError:  # JSON nested too deep
+        raise GrunError("machine.unreadable", path=str(path), reason="nested too deep") from None
     except (OSError, ValueError) as exc:  # a bad encoding or bad JSON is a ValueError
         raise GrunError("machine.unreadable", path=str(path), reason=getattr(exc, "strerror", None) or str(exc))
 
@@ -63,7 +65,7 @@ def _config_ref(config_path):
     try:
         with open(config_path, encoding="utf-8") as fh:
             value = json.load(fh).get("machineProfile")
-    except (OSError, ValueError, AttributeError):
+    except (OSError, ValueError, AttributeError, RecursionError):
         return None
     return value if isinstance(value, str) and value else None
 
