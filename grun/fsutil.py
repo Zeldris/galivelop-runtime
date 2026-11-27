@@ -10,6 +10,8 @@ import os
 import tempfile
 from pathlib import Path
 
+from .errors import GrunError
+
 _MISSING = object()
 
 
@@ -90,6 +92,17 @@ def read_json(path, default=_MISSING):
         if default is _MISSING:
             raise
         return default
+
+
+def read_json_as(file, code, default=_MISSING, **params):
+    """`read_json` whose unreadable or invalid content (OSError, ValueError, a JSON nested too deep) raises
+    `GrunError(code, **params)`; a missing file is still `default` (or FileNotFoundError)."""
+    try:
+        return read_json(file, default)
+    except FileNotFoundError:
+        raise
+    except (OSError, ValueError, RecursionError):
+        raise GrunError(code, **params) from None
 
 
 @contextlib.contextmanager

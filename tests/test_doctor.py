@@ -252,6 +252,13 @@ class MainTests(DoctorBase):
         self.assertNotIn("Traceback", err)
         self.assertIn("queue.json", out)
 
+    def test_a_too_deep_queue_is_a_problem_not_a_traceback(self):
+        self.data.mkdir()
+        paths.queue_path(self.data).write_text("[" * 100000, encoding="utf-8")
+        code, out, err = self.run_main("doctor", "--data", str(self.data), "--json")
+        self.assertEqual(code, 1)
+        self.assertEqual(json.loads(out)["queue"]["error"], "queue.corrupt")
+
     def test_python_dash_m(self):
         env = dict(os.environ, PYTHONPATH=str(ROOT))
         proc = subprocess.run([sys.executable, "-m", "grun", "doctor", "--data", str(self.data), "--json"],

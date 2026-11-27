@@ -9,12 +9,13 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import shutil
 import subprocess
 import sys
 from pathlib import Path
 
-from . import __version__
+from . import __version__, fsutil
 from .errors import GrunError
 
 SCHEMA = "grun.vendor/0"
@@ -27,7 +28,10 @@ class VendorError(GrunError):
 
 
 def _sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    try:
+        return hashlib.sha256(path.read_bytes()).hexdigest()
+    except OSError:
+        raise VendorError("vendor.unreadable", file=str(path)) from None
 
 
 def collect(root: Path) -> dict[str, str]:
@@ -70,17 +74,27 @@ def export(dest: Path, *, source: str | None = None) -> dict:
     resolved = target.resolve()
     if resolved == PACKAGE or resolved in PACKAGE.parents or PACKAGE in resolved.parents:
         raise VendorError("vendor.is_source", path=str(target))
-    if target.exists():
-        if not (target / MANIFEST).is_file():
+    if target.is_symlink() or target.exists():
+        if target.is_symlink() or not (target / MANIFEST).is_file():
             raise VendorError("vendor.not_vendored", path=str(target))
-        shutil.rmtree(target)
-    (target / "locales").mkdir(parents=True)
     files = collect(PACKAGE)
-    for name in files:
-        shutil.copyfile(PACKAGE / name, target / name)
     manifest = {"schema": SCHEMA, "version": __version__, "source": source if source is not None else _source(),
                 "fingerprint": fingerprint(files), "files": files}
-    (target / MANIFEST).write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    # Build the copy beside the target and rename it into place: a failure half way leaves the target as it was.
+    tmp = Path(dest) / (".grun.tmp-%d" % os.getpid())
+    if tmp.exists():
+        shutil.rmtree(tmp)
+    try:
+        (tmp / "locales").mkdir(parents=True)
+        for name in files:
+            shutil.copyfile(PACKAGE / name, tmp / name)
+        (tmp / MANIFEST).write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        if target.exists():
+            shutil.rmtree(target)
+        tmp.rename(target)
+    except BaseException:
+        shutil.rmtree(tmp, ignore_errors=True)
+        raise
     return manifest
 
 
@@ -93,16 +107,19 @@ def verify(root: Path, *, pinned: str | None = None) -> list[dict]:
     fingerprint is not the one the consumer pinned)."""
     root = Path(root)
     try:
-        manifest = json.loads((root / MANIFEST).read_text(encoding="utf-8"))
+        manifest = fsutil.read_json_as(root / MANIFEST, "vendor.bad_manifest")
     except FileNotFoundError:
         return [{"code": "vendor.no_manifest", "params": {"path": str(root)}}]
-    except (OSError, ValueError):
+    except GrunError:
         return [{"code": "vendor.bad_manifest", "params": {"path": str(root)}}]
     listed = manifest.get("files") if isinstance(manifest, dict) else None
     if (not isinstance(manifest, dict) or manifest.get("schema") != SCHEMA or not isinstance(listed, dict)
             or not all(isinstance(k, str) and isinstance(v, str) for k, v in listed.items())):
         return [{"code": "vendor.bad_manifest", "params": {"path": str(root)}}]
-    actual = collect(root)
+    try:
+        actual = collect(root)
+    except VendorError as exc:
+        return [{"code": exc.code, "params": exc.params}]
     problems = []
     for name in sorted(set(listed) | set(actual)):
         if name not in actual:
@@ -114,7 +131,7 @@ def verify(root: Path, *, pinned: str | None = None) -> list[dict]:
     if manifest.get("fingerprint") != fingerprint(listed):
         problems.append({"code": "vendor.fingerprint", "params": {"expected": fingerprint(listed),
                                                                   "found": str(manifest.get("fingerprint"))}})
-    if pinned is not None and pinned != fingerprint(actual):
+    if pinned is not None and pinned.lower() != fingerprint(actual):
         problems.append({"code": "vendor.pinned", "params": {"expected": pinned, "found": fingerprint(actual)}})
     return problems
 

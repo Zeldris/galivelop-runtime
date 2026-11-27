@@ -196,10 +196,8 @@ class Queue:
     # -- storage -----------------------------------------------------------------------------------------
 
     def _load(self) -> dict:
-        try:
-            data = fsutil.read_json(self._path, default={"nextId": 1, "entries": []})
-        except (OSError, ValueError):
-            raise GrunError("queue.corrupt", path=str(self._path))
+        data = fsutil.read_json_as(self._path, "queue.corrupt", default={"nextId": 1, "entries": []},
+                                   path=str(self._path))
         if (not isinstance(data, dict) or not isinstance(data.get("entries"), list)
                 or not isinstance(data.get("nextId"), int) or isinstance(data.get("nextId"), bool)
                 or not all(isinstance(e, dict) and e.get("state") in STATES and type(e.get("id")) is int

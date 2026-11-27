@@ -133,3 +133,7 @@
 {"agent":"main","branch":"ccr-2447cc83-5kxr8j","cacheRead":198329,"cacheWrite":1462,"date":"2026-11-27","input":6,"model":"claude-sonnet-5-5","output":971,"recorded":"2026-11-27T16:21:14Z","refs":["R1"],"session":"5b03f93b"}
 {"agent":"main","branch":"ccr-2447cc83-5kxr8j","cacheRead":201689,"cacheWrite":1512,"date":"2026-11-27","input":3,"model":"claude-sonnet-5-5","output":281,"recorded":"2026-11-27T16:23:32Z","refs":["R1"],"session":"5b03f93b"}
 {"agent":"main","branch":"ccr-2447cc83-5kxr8j","cacheRead":102124,"cacheWrite":424,"date":"2026-11-27","input":4,"model":"claude-sonnet-5-5","output":187,"recorded":"2026-11-27T16:23:39Z","refs":["R1"],"session":"5b03f93b"}
+{"agent":"gw-worker","branch":"ccr-2447cc83-5kxr8j","cacheRead":15225,"cacheWrite":20268,"date":"2026-11-27","input":4,"model":"claude-sonnet-5-5","output":599,"recorded":"2026-11-27T18:43:30Z","refs":[],"session":"92f45481"}
+{"agent":"main","branch":"ccr-2447cc83-5kxr8j","cacheRead":421379,"cacheWrite":31106,"date":"2026-11-27","input":10,"model":"claude-sonnet-5-5","output":2119,"recorded":"2026-11-27T18:43:30Z","refs":[],"session":"92f45481"}
+{"agent":"gw-worker","branch":"ccr-2447cc83-5kxr8j","cacheRead":81350,"cacheWrite":22976,"date":"2026-11-27","input":6,"model":"claude-sonnet-5-5","output":1385,"recorded":"2026-11-27T18:43:44Z","refs":[],"session":"92f45481"}
+{"agent":"main","branch":"ccr-2447cc83-5kxr8j","cacheRead":186872,"cacheWrite":1537,"date":"2026-11-27","input":4,"model":"claude-sonnet-5-5","output":501,"recorded":"2026-11-27T18:43:44Z","refs":[],"session":"92f45481"}

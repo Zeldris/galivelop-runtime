@@ -44,11 +44,10 @@ def _exists(path: Path) -> bool:
 def _read_queue(path: Path):
     """``(exists, entries or None, error code or None)`` without creating anything."""
     try:
-        with open(str(path), encoding="utf-8") as fh:
-            data = json.load(fh)
+        data = fsutil.read_json_as(path, "queue.corrupt")
     except FileNotFoundError:
         return False, [], None
-    except (OSError, ValueError):
+    except GrunError:
         return True, None, "queue.corrupt"
     if not _valid(data):
         return True, None, "queue.corrupt"
