@@ -212,7 +212,7 @@
   "worktreeDir": "",
   "reviewMark": "docs/records/reviewed.txt",
   "requireRetro": false,
-  "agentSignatures": true,
+  "agentSignatures": false,
   "commitFormat": "free",
   "commitRefs": false,
   "commitNext": true,
@@ -283,8 +283,14 @@
     "^\\.claude/skills/.*\\.md$",
     "^\\.agents/skills/.*\\.md$"
   ],
-  "roadmap": false,
-  "roadmapFiles": [],
+  "roadmap": true,
+  "roadmapFiles": [
+    {
+      "path": "docs/roadmap.md",
+      "done": "hecho",
+      "open": ["pendiente", "en curso"]
+    }
+  ],
   "selector": {
     "cases": []
   },
