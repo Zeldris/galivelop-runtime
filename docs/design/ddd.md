@@ -57,7 +57,7 @@ Galivelop y sin que una aplicación tenga que saber nada de las demás.
 | Lanzador | `Launcher` | Lo que arranca el worker cuando hay trabajo y nadie tiene `worker.lock` (hoy `G/service.py`). |
 | Motor | `Engine` | El adaptador que hace el trabajo de verdad (sd.cpp, qwentts.cpp). Es de la aplicación, no de `grun`. |
 | Candado de máquina | `MachineLock` | Un `flock` exclusivo sobre el `gpu.lock` común. Quien lo tiene es el único que usa la GPU en ese momento. |
-| Titular | `Holder` | El proceso que tiene el candado ahora, con su aplicación, su entrada y desde cuándo. Lo escribe él mismo en el `gpu.lock` al tomarlo (`grun.lock/0`) y es solo información. |
+| Titular | `Holder` | El proceso que tiene el candado ahora, con su aplicación, su entrada y desde cuándo. Lo escribe él mismo en el `gpu.lock` al tomarlo (`grun.lock/1`) y es solo información. |
 | Espera | `Wait` | El tiempo que una entrada pasa sin poder correr: esperando el candado o, ya con él, a tener memoria libre. Se puede cancelar (`WaitCancelled`) y nunca cuenta como fallo. |
 | Pausa | `Pause` | Una marca (`<data>/queue.paused`) que impide al worker reclamar entradas nuevas; la que está corriendo termina. |
 | Huérfana | `Orphan` | Una entrada en `running` cuando nadie tiene `worker.lock`. Al recuperarla vuelve a la cola, queda `cancelled` si tenía `cancelRequested`, o se cierra como fallo (§8, P-5). |
@@ -108,7 +108,7 @@ Galivelop y sin que una aplicación tenga que saber nada de las demás.
   hoy (`minFreeMemoryMb`, `watchMemoryMb`, `timeoutS`, `engine.*`) son la entrada de gmod para diseñar ese esquema.
 - **`galivelop-image-generator` (gimg) y `galivelop-voice-generator` (gvoice):** conformistas. Vendorizan `grun` y le
   conectan su motor, sus pedidos, sus ganchos y su interfaz.
-- **`World-Maker-Fantasy` (WMF):** cliente del candado mediante el protocolo publicado (`grun.lock/0` y §8, P-3).
+- **`World-Maker-Fantasy` (WMF):** cliente del candado mediante el protocolo publicado (`grun.lock/1`, `docs/protocol/grun.lock.1.md`, y §8, P-3).
   - Su backend es TypeScript y ya serializa sus llamadas con `ollamaQueue.ts` (concurrencia 1), así que el candado
     va dentro de esa cola.
   - Sus herramientas en Python o shell pueden usar `flock` directamente.
@@ -155,7 +155,7 @@ Galivelop y sin que una aplicación tenga que saber nada de las demás.
 - **Artefactos gart** (todos `/0`, provisionales y sin huella, hasta que se promuevan; §8, P-13):
   - `grun.queue/0`: el `queue.json` de una aplicación. Acepta entradas antiguas sin los campos nuevos (gimg ya
     añadió campos con valores por defecto) y deja campos libres por aplicación.
-  - `grun.lock/0`: el contenido informativo del `gpu.lock` (aplicación, pid, entrada y desde cuándo). El candado lo
+  - `grun.lock/1` (desde R5, D-13; era `/0`): el contenido informativo del `gpu.lock` (aplicación, pid, entrada y desde cuándo). El candado lo
     da el `flock`, no este texto.
   - `grun.run/0`: el resumen de una ejecución terminada (tiempos de espera y ejecución, estado y código de error),
     pensado para GVE.

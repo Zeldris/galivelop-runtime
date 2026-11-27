@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "grun.lock/1",
+  "title": "grun.lock/1 (provisional, no fingerprint: D-13)",
+  "description": "The holder record that grun writes into gpu.lock while it holds the machine lock. Informative only: the lock is the flock. The file may be empty (a holder that writes nothing, e.g. flock(1)) or hold something that is not this record; a reader must accept both. Readers must ignore unknown fields.",
+  "type": "object",
+  "required": ["schema", "app", "pid", "entry", "since"],
+  "properties": {
+    "schema": {"const": "grun.lock/1"},
+    "app": {"type": ["string", "null"]},
+    "pid": {"type": "integer", "minimum": 1},
+    "entry": {"type": ["string", "integer", "null"]},
+    "since": {"type": "string", "pattern": "^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\dZ$"}
+  }
+}

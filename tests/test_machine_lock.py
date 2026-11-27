@@ -268,7 +268,7 @@ class HolderTests(LockBase):
     def test_record_while_held(self):
         with machine_lock.hold(app="galivelop-voice", entry="job-1"):
             rec = machine_lock.holder()
-            self.assertEqual(rec["schema"], "grun.lock/0")
+            self.assertEqual(rec["schema"], "grun.lock/1")
             self.assertEqual(rec["app"], "galivelop-voice")
             self.assertEqual(rec["entry"], "job-1")
             self.assertEqual(rec["pid"], os.getpid())

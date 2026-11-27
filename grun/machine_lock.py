@@ -9,7 +9,7 @@ dies, so a worker killed in the middle of a job never leaves the machine locked.
 (`held_fds`) keeps the lock after its parent dies. The file is never deleted nor replaced (that would let two holders
 lock two different files); it is created with the state folder when missing.
 
-While held, the file contains the holder record (``grun.lock/0``), written in place through the locked descriptor
+While held, the file contains the holder record (``grun.lock/1``, `schemas/grun.lock.1.json`), written in place through the locked descriptor
 (never an atomic replace: it would change the inode and break the lock). It is informative only: the lock is the
 ``flock``, and a holder that writes nothing (e.g. ``flock(1)``) is still a holder."""
 from __future__ import annotations
@@ -26,7 +26,7 @@ from . import paths
 from .errors import GrunError
 
 POLL_S = 0.05
-SCHEMA = "grun.lock/0"
+SCHEMA = "grun.lock/1"
 _held = []  # descriptors of the locks this process holds right now (see `held_fds`)
 _owner = None  # thread id of the outermost `hold` active in this process (a nested `hold` of it does not wait)
 
