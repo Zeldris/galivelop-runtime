@@ -11,7 +11,7 @@
 | **Rama** | `ccr-2447cc83-5kxr8j` |
 | **Fase / tarea** | `0.1`, `0.2` y `0.3` (R4.1-R4.4) fusionadas en `main` (PR #5, `d6decec`, CI en verde). Retro de `0.3` decidida (P4 aplicada; P1 anotada para `0.4`). |
 | **Último punto estable** | R5: protocolo `grun.lock/1` publicado (`docs/protocol/grun.lock.1.md`, `schemas/grun.lock.1.json`, `SCHEMA` a `/1`). Antes, 0.4 (2/2): leves de `machine_lock.py` (`busy` None si no se sabe, `hold` reentrante por hilo) y `fsutil.held` (solo BlockingIOError = True) barridos. Antes, 0.4 (1/2): `queue.py` barridos (`stop_batch` int, generadores en `enqueue`, `etaS` inf, poda por fin, `checks` con `""`). Antes, R4.4: invariante 13, esquema `schemas/grun.queue.0.json` y ejemplos de `/api/queue` (`docs/tasks/R4.4.md`), sobre R4.3 (lanzador). |
-| **Siguiente paso** | `0.4` (R5, parte de este repo hecha: `docs/tasks/R5.md`) a falta de revisión y retro; pendiente de la persona: integración de `flock(1)` en WMF y prueba en la Deck (`pending.md`): revisión de código del diff contra `origin/main`, después, según `docs/roadmap.md`, la siguiente tarea. gimg sin `machine_lock.py` y D-7 en gvoice siguen pendientes de la persona. |
+| **Siguiente paso** | `0.4` revisada por bloque (sin graves ni medios; 2 leves de tests a `pending.md`). Falta: `gw-opt-tokens`, retro (se presenta a la persona), revisión del cierre, `reviewed.sh` y PR a `main` con confirmación. Pendiente de la persona: integración de `flock(1)` en `ollamaQueue.ts` de WMF y prueba en la Deck. |
 | **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (385 tests). |
 
 ## Autoría
