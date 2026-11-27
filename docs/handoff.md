@@ -9,9 +9,9 @@
 | Campo | Valor |
 |---|---|
 | **Rama** | `ccr-2447cc83-5kxr8j` |
-| **Fase / tarea** | `0.2` (R3): R3.1 hecho y revisado, R3.3 hecho (sin revisar); `0.1` fusionada en `main`. `0.1` (R1) completo y revisado. Presupuesto de compactaciones: 0 |
-| **Último punto estable** | este commit: `grun vendor` (R3.1). Antes, `1fc3c8a` (CI verde). |
-| **Siguiente paso** | Cierre de `0.2`: retro decidida y aplicada. Falta confirmación de la persona para `reviewed.sh` y subir a `main`; D-7 en gvoice pendiente de la persona (`pending.md`). Después, `0.3` (R4). |
+| **Fase / tarea** | `0.1` (R1) y `0.2` (R3) fusionadas en `main` (PR #4, `e1277d7`). Sin tarea en curso. Presupuesto de compactaciones: 0 |
+| **Último punto estable** | merge de `main` (`e1277d7`) en la rama. |
+| **Siguiente paso** | `0.3` (R4). D-7 en gvoice sigue pendiente de la persona (`pending.md`); no bloquea R4. |
 | **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (306 tests). |
 
 ## Autoría
