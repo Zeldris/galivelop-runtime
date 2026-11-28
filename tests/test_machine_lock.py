@@ -335,6 +335,15 @@ def lock_deletions(source: str, filename: str = "<src>") -> list:
     return found
 
 
+class HolderDeepJsonTests(LockBase):
+    def test_deep_json_is_an_unreadable_record(self):
+        with machine_lock.hold(app="a"):
+            with open(str(paths.machine_lock_path()), "r+b") as f:
+                f.truncate(0)
+                f.write(b"[" * 100000 + b"]" * 100000)
+            self.assertEqual(machine_lock.holder(), {})
+
+
 class NeverDeletedTests(unittest.TestCase):
     def test_the_scan_detects_a_deletion(self):
         # The guard must be able to fail: it finds these.

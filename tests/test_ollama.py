@@ -187,5 +187,25 @@ class EvictTests(unittest.TestCase):
         self.assertEqual(seen, ["http://localhost:11434"])
 
 
+class SweepR61Tests(unittest.TestCase):
+    def test_url_with_path_query_or_fragment_is_rejected(self):
+        for url in ("http://localhost:11434/api", "http://localhost:11434/?a=1", "http://localhost:11434#x",
+                    "http://localhost:11434?x"):
+            with self.assertRaises(GrunError) as cm:
+                ollama.check_local(url)
+            self.assertEqual(cm.exception.code, "engine.ollama_url", url)
+
+    def test_deep_json_is_nothing_loaded(self):
+        body = b"[" * 100000 + b"]" * 100000
+        with FakeOllama([MODEL], ps_body=body) as fake:
+            self.assertEqual(ollama.loaded(fake.url), [])
+
+    def test_evict_checks_cancel_before_each_unload(self):
+        with FakeOllama([MODEL]) as fake:
+            with self.assertRaises(machine_lock.WaitCancelled):
+                ollama.evict({"engine": {"ollamaUrl": fake.url}}, lambda: True, wait_s=1, poll_s=0.01)
+            self.assertEqual(fake.paths(), [("GET", "/api/ps")])
+
+
 if __name__ == "__main__":
     unittest.main()

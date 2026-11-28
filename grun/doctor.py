@@ -70,6 +70,9 @@ def diagnose(data, *, app: str | None = None) -> dict:
     if busy and holder == {}:
         problems.append({"code": "doctor.machine_holder_unknown", "params": {"path": machine["path"]}})
 
+    if busy is None:
+        problems.append({"code": "doctor.machine_busy_undetermined", "params": {"path": machine["path"]}})
+
     qpath = paths.queue_path(data)
     exists, entries, error = _read_queue(qpath)
     counts = {}

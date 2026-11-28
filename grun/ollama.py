@@ -40,6 +40,8 @@ def check_local(url) -> str:
         parts, host = None, ""
     if parts is None or parts.scheme not in ("http", "https"):
         raise GrunError("engine.ollama_url", url=str(url))
+    if parts.query or parts.fragment or parts.path not in ("", "/") or "?" in url or "#" in url:
+        raise GrunError("engine.ollama_url", url=url)
     if host.lower() not in LOCAL_HOSTS:
         raise GrunError("net.non_local_host", host=host)
     return url.rstrip("/")
@@ -96,6 +98,8 @@ def evict(machine, should_cancel=None, *, wait_s: float = 15.0, poll_s: float = 
     if mode == "abort":
         raise GrunError("engine.ollama_loaded", models=", ".join(names))
     for name in names:
+        if should_cancel is not None and should_cancel():
+            raise machine_lock.WaitCancelled()
         unload(url, name)
     deadline = time.monotonic() + wait_s
     while True:

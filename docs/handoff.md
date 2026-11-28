@@ -26,11 +26,11 @@ La rama se reescribió el 2026-11-27 (autor y firmas) con permiso de la persona;
 
 ## Hecho (5 últimas)
 
-1. 2026-11-28 — PR #7: tests de `grun vendor` con idioma fijo y README al día, fusionado en `main`.
-2. 2026-11-27 — R4.1: servidor base (`grun/server.py`): Host/Origin, tabla error→HTTP con tabla de la aplicación, rutas de cola y `health`, `serve.lock`/`serve.json` (sin revisar).
-3. 2026-11-27 — R3.2: alias `GVOICE_STATE_HOME` retirado (gvoice ya usa `GALIVELOP_STATE_HOME`, confirmado por la persona).
-4. 2026-11-27 — R3.3: revisión de bloque, 2 medios arreglados (`export` atómico con `.grun.old-<pid>`, `profile` ante JSON hondo) y leves a pending.md.
-5. 2026-11-27 — R3.3: barrido de leves: fsutil.read_json_as (doctor, queue, vendor), leves de vendor.py y doctor.py (sin revisar)
+1. 2026-11-28 — R6.1: barrido de 4 leves: URL de Ollama con ruta/query/fragmento rechazada, `evict` mira `should_cancel` antes de cada `unload`, `holder` ante JSON hondo, `doctor` avisa de `busy()` desconocido (`doctor.machine_busy_undetermined`).
+2. 2026-11-28 — PR #7: tests de `grun vendor` con idioma fijo y README al día, fusionado en `main`.
+3. 2026-11-27 — R4.1: servidor base (`grun/server.py`): Host/Origin, tabla error→HTTP con tabla de la aplicación, rutas de cola y `health`, `serve.lock`/`serve.json` (sin revisar).
+4. 2026-11-27 — R3.2: alias `GVOICE_STATE_HOME` retirado (gvoice ya usa `GALIVELOP_STATE_HOME`, confirmado por la persona).
+5. 2026-11-27 — R3.3: revisión de bloque, 2 medios arreglados (`export` atómico con `.grun.old-<pid>`, `profile` ante JSON hondo) y leves a pending.md.
 
 ## Pendiente
 

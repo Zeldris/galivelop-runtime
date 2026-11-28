@@ -7,6 +7,7 @@
   "doctor.lock_unknown": "{name}: cannot be known ({path} cannot be opened)",
   "doctor.machine_busy": "machine lock {path}: held by {app} (entry {entry}, pid {pid}, since {since})",
   "doctor.machine_busy_unknown": "machine lock {path}: held (the holder left no record)",
+  "doctor.machine_busy_undetermined": "cannot tell whether anyone holds the machine lock {path} (it cannot be opened)",
   "doctor.machine_free": "machine lock {path}: free",
   "doctor.machine_holder_unknown": "someone holds the machine lock {path} but left no readable record",
   "doctor.ok": "No problems found.",

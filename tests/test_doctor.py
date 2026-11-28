@@ -162,6 +162,19 @@ class DiagnoseTests(DoctorBase):
         self.assertEqual(report["orphans"], [])
         self.assertIn("doctor.lock_unknown", self.codes(report))
 
+    def test_unknown_machine_lock_is_a_problem(self):
+        with mock.patch("grun.machine_lock.busy", return_value=None):
+            report = doctor.diagnose(self.data)
+        self.assertIsNone(report["machine"]["busy"])
+        self.assertIn("doctor.machine_busy_undetermined", self.codes(report))
+        for lang in ("es", "en"):
+            text = doctor.render(report, lang)
+            self.assertNotIn("doctor.machine_busy_undetermined", text)
+            self.assertIn(report["machine"]["path"], text)
+
+    def test_free_machine_lock_is_not_that_problem(self):
+        self.assertNotIn("doctor.machine_busy_undetermined", self.codes(doctor.diagnose(self.data)))
+
     def test_app_lock_held(self):
         self.hold(self.data / "serve.lock")
         report = doctor.diagnose(self.data, app="gimg")

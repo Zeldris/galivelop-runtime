@@ -7,6 +7,7 @@
   "doctor.lock_unknown": "{name}: no se puede saber ({path} no se puede abrir)",
   "doctor.machine_busy": "candado de máquina {path}: lo tiene {app} (entrada {entry}, pid {pid}, desde {since})",
   "doctor.machine_busy_unknown": "candado de máquina {path}: tomado (el titular no dejó registro)",
+  "doctor.machine_busy_undetermined": "no se puede saber si alguien tiene el candado de máquina {path} (no se puede abrir)",
   "doctor.machine_free": "candado de máquina {path}: libre",
   "doctor.machine_holder_unknown": "alguien tiene el candado de máquina {path} pero no dejó un registro legible",
   "doctor.ok": "Sin problemas.",

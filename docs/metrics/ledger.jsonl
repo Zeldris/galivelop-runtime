@@ -313,3 +313,6 @@
 {"agent":"main","branch":"claude/release-v0.1.0","cacheRead":281320,"cacheWrite":1584,"date":"2026-11-28","input":8,"model":"claude-opus-5-5","output":1401,"recorded":"2026-11-28T14:45:37Z","refs":["R3.1"],"session":"79132453"}
 {"agent":"main","branch":"claude/release-v0.1.0","cacheRead":191505,"cacheWrite":1200,"date":"2026-11-28","input":4,"model":"claude-opus-5-5","output":346,"recorded":"2026-11-28T14:46:21Z","refs":["R3.1"],"session":"79132453"}
 {"agent":"main","branch":"claude/release-v0.1.0","cacheRead":226427,"cacheWrite":35016,"date":"2026-11-28","input":12,"model":"claude-opus-5-5","output":1815,"recorded":"2026-11-28T14:47:18Z","refs":["R3.1"],"session":"584ea6c0"}
+{"agent":"main","branch":"claude/release-v0.1.0","cacheRead":139500,"cacheWrite":43376,"date":"2026-11-28","input":6,"model":"claude-sonnet-5-5","output":1932,"recorded":"2026-11-28T14:48:11Z","refs":[],"session":"584ea6c0"}
+{"agent":"gw-worker","branch":"claude/release-v0.1.0","cacheRead":62021,"cacheWrite":26912,"date":"2026-11-28","input":8,"model":"claude-sonnet-5-5","output":2323,"recorded":"2026-11-28T14:48:26Z","refs":[],"session":"584ea6c0"}
+{"agent":"main","branch":"claude/release-v0.1.0","cacheRead":126902,"cacheWrite":1295,"date":"2026-11-28","input":4,"model":"claude-sonnet-5-5","output":435,"recorded":"2026-11-28T14:48:26Z","refs":[],"session":"584ea6c0"}
