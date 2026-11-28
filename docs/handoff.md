@@ -10,8 +10,8 @@
 |---|---|
 | **Rama** | `claude/release-v0.1.0` |
 | **Fase / tarea** | `0.1`-`0.4` y R5 (`grun.lock/1`) ya en `main` (PR #6, `c827879`). Esta rama solo trae el arreglo de los tests de la CLI de vendor con locale en español (R3.1) y el README al día. Presupuesto de compactaciones: 0 |
-| **Último punto estable** | `main` fusionada en la rama (`c827879`); check en verde sobre la fusión. |
-| **Siguiente paso** | Retro decidida (T1 aplicada; P1-P3 al flujo). Marca de revisión y PR a `main` (skill `pr`); fusionar solo con el CI en verde y la confirmación de la persona. Pendiente de la persona: `flock(1)` en `ollamaQueue.ts` de WMF y prueba en la Deck. |
+| **Último punto estable** | PR #7 fusionado en `main` (`6d2fc29`, 2026-11-28) con confirmación de la persona y CI en verde sobre `28a4905`. |
+| **Siguiente paso** | Siguiente tarea del roadmap: `R6.1` (barrido de `ollama.py`, `0.5`). Llevar P1-P3 de `docs/records/retro-2026-11-28-release-v0-1-0.md` al flujo. Pendiente de la persona: `flock(1)` en `ollamaQueue.ts` de WMF y prueba en la Deck. |
 | **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (402 tests) sobre la fusión con `main`, con locale `es_ES`. |
 
 ## Autoría
@@ -26,11 +26,11 @@ La rama se reescribió el 2026-11-27 (autor y firmas) con permiso de la persona;
 
 ## Hecho (5 últimas)
 
-1. 2026-11-27 — R4.1: servidor base (`grun/server.py`): Host/Origin, tabla error→HTTP con tabla de la aplicación, rutas de cola y `health`, `serve.lock`/`serve.json` (sin revisar).
-2. 2026-11-27 — R3.2: alias `GVOICE_STATE_HOME` retirado (gvoice ya usa `GALIVELOP_STATE_HOME`, confirmado por la persona).
-3. 2026-11-27 — R3.3: revisión de bloque, 2 medios arreglados (`export` atómico con `.grun.old-<pid>`, `profile` ante JSON hondo) y leves a pending.md.
-4. 2026-11-27 — R3.3: barrido de leves: fsutil.read_json_as (doctor, queue, vendor), leves de vendor.py y doctor.py (sin revisar)
-5. 2026-11-27 — R3.1: `grun vendor` (`grun/vendor.py`), copia con manifiesto y huella sha256 y su verificación (sin revisar).
+1. 2026-11-28 — PR #7: tests de `grun vendor` con idioma fijo y README al día, fusionado en `main`.
+2. 2026-11-27 — R4.1: servidor base (`grun/server.py`): Host/Origin, tabla error→HTTP con tabla de la aplicación, rutas de cola y `health`, `serve.lock`/`serve.json` (sin revisar).
+3. 2026-11-27 — R3.2: alias `GVOICE_STATE_HOME` retirado (gvoice ya usa `GALIVELOP_STATE_HOME`, confirmado por la persona).
+4. 2026-11-27 — R3.3: revisión de bloque, 2 medios arreglados (`export` atómico con `.grun.old-<pid>`, `profile` ante JSON hondo) y leves a pending.md.
+5. 2026-11-27 — R3.3: barrido de leves: fsutil.read_json_as (doctor, queue, vendor), leves de vendor.py y doctor.py (sin revisar)
 
 ## Pendiente
 
