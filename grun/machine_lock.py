@@ -129,6 +129,6 @@ def holder():
     try:
         with open(str(paths.machine_lock_path()), "rb") as f:
             data = json.loads(f.read().decode("utf-8"))
-    except (OSError, ValueError):
+    except (OSError, ValueError, RecursionError):  # RecursionError: JSON nested too deep
         return {}
     return data if isinstance(data, dict) else {}

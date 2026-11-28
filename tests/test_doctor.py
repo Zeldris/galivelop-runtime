@@ -117,6 +117,15 @@ class DiagnoseTests(DoctorBase):
         self.assertEqual(report["machine"]["holder"], {})
         self.assertIn("doctor.machine_holder_unknown", self.codes(report))
 
+    def test_unknown_machine_lock_is_not_free(self):
+        with mock.patch("grun.machine_lock.busy", return_value=None):
+            report = doctor.diagnose(self.data)
+        self.assertIsNone(report["machine"]["busy"])
+        self.assertIsNone(report["machine"]["holder"])
+        problems = [p for p in report["problems"] if p["code"] == "doctor.machine_unknown"]
+        self.assertEqual(len(problems), 1)
+        self.assertEqual(problems[0]["params"]["path"], str(paths.machine_lock_path()))
+
     def test_queue_counts_order_and_pause(self):
         self.write_queue([
             self.entry(1, "done"), self.entry(2, "failed"), self.entry(3, "cancelled"),

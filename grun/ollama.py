@@ -42,6 +42,8 @@ def check_local(url) -> str:
         raise GrunError("engine.ollama_url", url=str(url))
     if host.lower() not in LOCAL_HOSTS:
         raise GrunError("net.non_local_host", host=host)
+    if parts.path not in ("", "/") or parts.query or parts.fragment or "?" in url or "#" in url:
+        raise GrunError("engine.ollama_url", url=url)
     return url.rstrip("/")
 
 
@@ -67,7 +69,7 @@ def loaded(url, timeout: float = 2.0) -> list:
             if isinstance(name, str) and isinstance(size, (int, float)) and not isinstance(size, bool) and size > 0:
                 names.append(name)
         return names
-    except Exception:  # network (OSError, HTTPException), bad JSON or an odd shape: nothing is loaded
+    except Exception:  # network (OSError, HTTPException), bad JSON (RecursionError too) or an odd shape: nothing is loaded
         return []
 
 
@@ -96,6 +98,8 @@ def evict(machine, should_cancel=None, *, wait_s: float = 15.0, poll_s: float = 
     if mode == "abort":
         raise GrunError("engine.ollama_loaded", models=", ".join(names))
     for name in names:
+        if should_cancel is not None and should_cancel():
+            raise machine_lock.WaitCancelled()
         unload(url, name)
     deadline = time.monotonic() + wait_s
     while True:

@@ -4,6 +4,7 @@
   "doctor.lock_absent": "{name}: no existe",
   "doctor.lock_free": "{name}: sin tomar",
   "doctor.lock_held": "{name}: lo tiene un proceso",
+  "doctor.machine_unknown": "candado de máquina: no se puede saber ({path} no se puede abrir)",
   "doctor.lock_unknown": "{name}: no se puede saber ({path} no se puede abrir)",
   "doctor.machine_busy": "candado de máquina {path}: lo tiene {app} (entrada {entry}, pid {pid}, desde {since})",
   "doctor.machine_busy_unknown": "candado de máquina {path}: tomado (el titular no dejó registro)",

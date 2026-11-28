@@ -306,6 +306,15 @@ class HolderTests(LockBase):
         os.write(fd, b"[1]")
         self.assertEqual(machine_lock.holder(), {})
 
+    def test_taken_with_too_deep_json_is_an_empty_dict(self):
+        path = paths.machine_lock_path()
+        path.parent.mkdir(parents=True)
+        path.write_text("[" * 100000)
+        fd = os.open(str(path), os.O_RDWR)
+        self.addCleanup(os.close, fd)
+        fcntl.flock(fd, fcntl.LOCK_EX)
+        self.assertEqual(machine_lock.holder(), {})
+
     def test_other_process_record(self):
         proc = self.spawn(HOLD_AND_SLEEP)
         self.assertEqual(proc.stdout.readline().strip(), "held")

@@ -67,6 +67,8 @@ def diagnose(data, *, app: str | None = None) -> dict:
     busy = machine_lock.busy()
     holder = machine_lock.holder() if busy else None
     machine = {"path": str(paths.machine_lock_path()), "busy": busy, "holder": holder}
+    if busy is None:
+        problems.append({"code": "doctor.machine_unknown", "params": {"path": machine["path"]}})
     if busy and holder == {}:
         problems.append({"code": "doctor.machine_holder_unknown", "params": {"path": machine["path"]}})
 

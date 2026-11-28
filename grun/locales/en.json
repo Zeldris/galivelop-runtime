@@ -4,6 +4,7 @@
   "doctor.lock_absent": "{name}: does not exist",
   "doctor.lock_free": "{name}: not held",
   "doctor.lock_held": "{name}: held by a process",
+  "doctor.machine_unknown": "machine lock: cannot be known ({path} cannot be opened)",
   "doctor.lock_unknown": "{name}: cannot be known ({path} cannot be opened)",
   "doctor.machine_busy": "machine lock {path}: held by {app} (entry {entry}, pid {pid}, since {since})",
   "doctor.machine_busy_unknown": "machine lock {path}: held (the holder left no record)",

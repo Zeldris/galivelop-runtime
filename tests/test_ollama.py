@@ -33,6 +33,13 @@ class CheckLocalTests(unittest.TestCase):
         self.assertEqual(self.code("http://localhost.evil.com").code, "net.non_local_host")
         self.assertEqual(self.code("http://user@example.com@localhost.x").code, "net.non_local_host")
 
+    def test_url_with_path_query_or_fragment_is_rejected(self):
+        for url in ("http://localhost:11434/api", "http://localhost/x/", "http://localhost?a=1", "http://localhost#f",
+                    "http://localhost:11434/?"):
+            err = self.code(url)
+            self.assertEqual((err.code, err.params["url"]), ("engine.ollama_url", url))
+        self.assertEqual(ollama.check_local("http://localhost:11434/"), "http://localhost:11434")
+
     def test_invariant_11_other_scheme(self):  # invariant 11
         for url in ("ftp://localhost", "file:///etc/passwd", "localhost:11434", "", None):
             self.assertEqual(self.code(url).code, "engine.ollama_url", url)
@@ -42,6 +49,10 @@ class LoadedTests(unittest.TestCase):
     def test_lists_models_with_size(self):
         with FakeOllama([MODEL, {"name": "idle", "size": 0}, {"name": "nosize"}]) as fake:
             self.assertEqual(ollama.loaded(fake.url), ["llama3:8b"])
+
+    def test_too_deeply_nested_json_is_empty(self):
+        with mock.patch.object(ollama, "_request", return_value=b"[" * 100000):
+            self.assertEqual(ollama.loaded("http://localhost"), [])
 
     def test_errors_are_empty(self):
         self.assertEqual(ollama.loaded(closed_port_url(), timeout=1), [])
@@ -151,6 +162,12 @@ class EvictTests(unittest.TestCase):
         with FakeOllama([MODEL], unloads=False) as fake:
             with self.assertRaises(machine_lock.WaitCancelled):
                 ollama.evict(self.machine(fake.url), lambda: True, wait_s=30, poll_s=0.01)
+
+    def test_cancel_before_unloading_does_not_unload(self):
+        with FakeOllama([MODEL]) as fake:
+            with self.assertRaises(machine_lock.WaitCancelled):
+                ollama.evict(self.machine(fake.url), lambda: True, wait_s=30, poll_s=0.01)
+            self.assertEqual(fake.paths(), [("GET", "/api/ps")])
 
     def test_wait_polls_should_cancel_each_round(self):
         calls = []
