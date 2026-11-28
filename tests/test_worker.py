@@ -617,7 +617,7 @@ class EventsTests(WorkerBase):
         self.assertEqual((events[2]["state"], events[2]["errorCode"]), ("done", None))
         summary = lines[-1]
         self.assertEqual({k: summary[k] for k in ("schema", "app", "entry", "state", "errorCode")},
-                         {"schema": "grun.run/0", "app": "testapp", "entry": 1, "state": "done", "errorCode": None})
+                         {"schema": "grun.run/1", "app": "testapp", "entry": 1, "state": "done", "errorCode": None})
         for key in ("lockWaitMs", "memoryWaitMs", "runMs"):
             self.assertIsInstance(summary[key], int)
 

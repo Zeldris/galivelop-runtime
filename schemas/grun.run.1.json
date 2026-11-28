@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "grun.run/1",
+  "title": "grun.run/1 (provisional, no fingerprint: D-13)",
+  "description": "The summary line that the worker appends to the app's JSONL log when it closes an entry. One line per entry closed, next to the event lines (which have an 'event' key and no 'schema'). Measures are deterministic; times are whole milliseconds. Readers must ignore unknown fields and lines whose schema they do not know.",
+  "type": "object",
+  "required": ["schema", "app", "entry", "state", "errorCode", "lockWaitMs", "memoryWaitMs", "runMs"],
+  "properties": {
+    "schema": {"const": "grun.run/1"},
+    "app": {"type": "string"},
+    "entry": {"type": ["string", "integer"]},
+    "state": {"enum": ["done", "failed", "cancelled"]},
+    "errorCode": {"type": ["string", "null"]},
+    "lockWaitMs": {"type": "integer", "minimum": 0},
+    "memoryWaitMs": {"type": "integer", "minimum": 0},
+    "runMs": {"type": "integer", "minimum": 0}
+  }
+}

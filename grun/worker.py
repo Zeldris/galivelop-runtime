@@ -19,7 +19,7 @@ from .queue import make_error
 LOCK_RETRY_S = 0.02
 LOCK_PATIENCE_S = 0.3  # after this, keep trying only while nothing but probes (shared locks) hold the file
 PROBE_PATIENCE_S = 5.0
-RUN_SCHEMA = "grun.run/0"  # provisional (D-13)
+RUN_SCHEMA = "grun.run/1"  # provisional, no fingerprint (D-13)
 SIGNALS = tuple(getattr(signal, name) for name in ("SIGTERM", "SIGHUP") if hasattr(signal, name))
 
 
