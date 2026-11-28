@@ -11,7 +11,7 @@
 | **Rama** | `claude/release-v0.1.0` |
 | **Fase / tarea** | `0.1`-`0.4` y R5 (`grun.lock/1`) ya en `main` (PR #6, `c827879`). Esta rama solo trae el arreglo de los tests de la CLI de vendor con locale en español (R3.1) y el README al día. Presupuesto de compactaciones: 0 |
 | **Último punto estable** | `main` fusionada en la rama (`c827879`); check en verde sobre la fusión. |
-| **Siguiente paso** | PR de `claude/release-v0.1.0` a `main`: falta gw-opt-tokens y la retro, presentarla a la persona, `reviewed.sh` y crear el PR (skill `pr`); fusionar solo con el CI en verde. Pendiente de la persona: `flock(1)` en `ollamaQueue.ts` de WMF, prueba en la Deck y quitar conectores/MCP sin uso con `/context`. |
+| **Siguiente paso** | Retro de la rama presentada (`docs/records/retro-2026-11-28-release-v0-1-0.md`), pendiente de la decisión de la persona (preguntas en `docs/questions.md`). Con ella: escribir su `**Estado:**`, aplicar lo aprobado, `reviewed.sh` y PR a `main` (skill `pr`); fusionar solo con el CI en verde. Pendiente de la persona: `flock(1)` en `ollamaQueue.ts` de WMF y prueba en la Deck. |
 | **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (402 tests) sobre la fusión con `main`, con locale `es_ES`. |
 
 ## Autoría
