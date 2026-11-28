@@ -65,7 +65,7 @@ copia de `machine_lock.py`» no tiene objeto y la prueba de gimg de la versión 
 | Id | Paso | Estado |
 |---|---|---|
 | R6.1 | **Barrido de leves de `ollama.py`:** URL con ruta/query/fragmento, `RecursionError` en `machine_lock.holder`, `evict` que mira `should_cancel` antes de descargar, `doctor` con `busy() is None` como desconocido | hecho (2026-11-28) |
-| R6.2 | **Protocolo `grun.run/1` publicado** (`docs/protocol/grun.run.1.md`, `schemas/grun.run.1.json`, `RUN_SCHEMA` a `/1`, `tests/test_run_protocol.py`); GVE lo lee desde su repo | hecho en este repo (2026-11-28); falta GVE y la decisión de `grun.trace/0` (D-16) |
+| R6.2 | **Protocolo `grun.run/1` publicado** (`docs/protocol/grun.run.1.md`, `schemas/grun.run.1.json`, `RUN_SCHEMA` a `/1`, `tests/test_run_protocol.py`); GVE lo lee desde su repo | hecho en este repo (2026-11-28); `grun.trace/0` diferido (D-16, 2026-11-28); falta solo GVE (otro repo) |
 
 ## Bloqueos externos
 

@@ -38,5 +38,5 @@ archivos de registro viejos conservan líneas `/0`: un lector que quiera el hist
 
 ## Fuera
 
-- `grun.trace/0` (traza por pasos de un intento): decisión D-16, a pendiente con GVE.
+- `grun.trace/0` (traza por pasos de un intento): diferido por decisión D-16 (2026-11-28), hasta que GVE pida el detalle por intento.
 - Que GVE pase por el turno de la máquina (D-3): integración en el repo de GVE, no aquí.

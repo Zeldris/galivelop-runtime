@@ -333,5 +333,5 @@ Tomadas el 2026-11-26 (F-1): la persona acepta las 17 recomendaciones de §8 (Q-
 - **D-13.** `grun.lock/1` en R5 y `grun.run/1` en R6; `grun.queue` se queda en `/0`.
 - **D-14.** Se conservan los códigos de error existentes con su nombre, con sus textos en los `locales` de `grun`. Nuevos: `queue.invalid_transition`, `queue.orphaned`, `net.non_local_host`.
 - **D-15.** `grun doctor` cubre candado, cola, huérfanas y candados de aplicación; `gimg doctor` lo llama.
-- **D-16.** `grun.trace/0` queda fuera de R1-R4; se decide con GVE en R6 (a pendiente).
+- **D-16.** `grun.trace/0` queda fuera de R1-R4; en R6 se decidió (2026-11-28) **diferirlo**: `grun.run/1` cubre lo que GVE consume y una traza sin consumidor sería un contrato más; se reabre cuando GVE pida el detalle por intento.
 - **D-17.** R2 se adelanta a R1: gimg copia `machine_lock.py` de gvoice («Copiado de gvoice@<sha>», que desaparece en R4) y pasa `held_fds` a sd.cpp.

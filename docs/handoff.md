@@ -11,7 +11,7 @@
 | **Rama** | `ccr-2447cc83-5kxr8j` |
 | **Fase / tarea** | `0.1`, `0.2` y `0.3` (R4.1-R4.4) fusionadas en `main` (PR #5, `d6decec`, CI en verde). Retro de `0.3` decidida (P4 aplicada; P1 anotada para `0.4`). |
 | **Último punto estable** | R6.2: protocolo `grun.run/1` publicado (doc, esquema, `RUN_SCHEMA` a `/1`, test que falla sin el cambio). Antes, R6.1 (4 leves), R5 (`grun.lock/1`) y 0.4 (barridos de `queue.py`, `machine_lock.py`, `fsutil.held`); detalle en `git log`. |
-| **Siguiente paso** | `0.4` y `R5` fusionadas en `main` (PR #6, `c827879`, CI en verde, 2026-11-27). R6.1 y R6.2 hechas; en `0.5` queda la parte de GVE (otro repo: leer `grun.run/1`, pasar por el turno, D-3) y decidir `grun.trace/0` (D-16) con la persona. Pendiente de la persona: `flock(1)` en `ollamaQueue.ts` de WMF, prueba en la Deck y quitar conectores/MCP sin uso con `/context`. |
+| **Siguiente paso** | `0.4` y `R5` fusionadas en `main` (PR #6, `c827879`, CI en verde, 2026-11-27). R6.1 y R6.2 hechas; en `0.5` queda la parte de GVE (otro repo: leer `grun.run/1`, pasar por el turno, D-3) ; `grun.trace/0` diferido (D-16, decidido 2026-11-28). La persona abre una sesión en GVE con `docs/protocol/grun.run.1.md` y `schemas/grun.run.1.json`. Pendiente de la persona: `flock(1)` en `ollamaQueue.ts` de WMF, prueba en la Deck y quitar conectores/MCP sin uso con `/context`. |
 | **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (385 tests). |
 
 ## Autoría
