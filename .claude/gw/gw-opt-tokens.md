@@ -13,7 +13,7 @@ las crea una vez; desde entonces son del proyecto.
 
 ## Costes conocidos
 
-- Arranque fijo ~82 k por llamada (75 % del gasto): solo baja quitando conectores/MCP sin uso con `/context` (decisión de la persona, hecha en su cuenta, no desde la sesión).
+- Arranque fijo ~82 k por llamada en Claude cloud (75 % del gasto) y ~22 k en local (VSCode, 2026-11-28): solo baja quitando conectores/MCP sin uso con `/context` (decisión de la persona, hecha en su cuenta, no desde la sesión).
 - Leer `docs/roadmap.md` y `docs/records/pending.md` enteros arrastra ~60 k cada uno: `roadmap.py show|list` y `grep -n '^- ' ... | cut -c1-140`.
 - No repetir `recover.py --state` si el gancho de inicio ya lo imprimió.
 - Comprobar el CI una vez al cerrar el bloque, no tras cada commit intermedio que no va a `main`: cada despertar cuesta ~32 k arrastrados. El gancho `Stop` lo pide por commit: sin cambio en el flujo, se atiende con una sola comprobación al cerrar.
@@ -45,3 +45,4 @@ las crea una vez; desde entonces son del proyecto.
 - 2026-11-27, cierre de `0.3` (tras `/clear`): 10 llamadas, contexto medio 91 983, 920 k de entrada (97 % de caché); arranque fijo ~80 510 por llamada (88 %). `pending.md` leído 3 veces (P2 aplazada).
 - 2026-11-27, `0.4` (tras `/clear`): 43 llamadas, contexto medio 109 636, 4,71 M de entrada (99 % de caché); arranque
   fijo ~82 187 por llamada (75 %). Subagentes `sonnet`: 28 llamadas, 1,13 M (`gw-worker` 2, `gw-reviewer` 1).
+- 2026-11-28, PR de `claude/release-v0.1.0` (local, tras `/clear`): 19 llamadas, contexto medio 55 946, 1,06 M de entrada (96 % de caché); arranque fijo ~21 667 por llamada (39 %). ~5 llamadas esperando un CI que no corre (commit solo del ledger, `paths-ignore`): P1 de la retro, al flujo.

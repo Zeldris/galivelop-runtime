@@ -8,11 +8,11 @@
 
 | Campo | Valor |
 |---|---|
-| **Rama** | `ccr-2447cc83-5kxr8j` |
-| **Fase / tarea** | `0.1`, `0.2` y `0.3` (R4.1-R4.4) fusionadas en `main` (PR #5, `d6decec`, CI en verde). Retro de `0.3` decidida (P4 aplicada; P1 anotada para `0.4`). |
-| **Último punto estable** | R5: protocolo `grun.lock/1` publicado (`docs/protocol/grun.lock.1.md`, `schemas/grun.lock.1.json`, `SCHEMA` a `/1`). Antes, 0.4 (2/2): leves de `machine_lock.py` (`busy` None si no se sabe, `hold` reentrante por hilo) y `fsutil.held` (solo BlockingIOError = True) barridos. Antes, 0.4 (1/2): `queue.py` barridos (`stop_batch` int, generadores en `enqueue`, `etaS` inf, poda por fin, `checks` con `""`). Antes, R4.4: invariante 13, esquema `schemas/grun.queue.0.json` y ejemplos de `/api/queue` (`docs/tasks/R4.4.md`), sobre R4.3 (lanzador). |
-| **Siguiente paso** | `0.4` lista salvo `main`: retro decidida (P2 aplicada, P1 anotada como `R6.1`, P3/P4 al flujo). Persona confirmó cerrar (`1.ok`): marca de revisión hecha; falta crear el PR a `main` (skill `pr`) y fusionarlo solo con el CI en verde y su confirmación. Pendiente de la persona: `flock(1)` en `ollamaQueue.ts` de WMF, prueba en la Deck y quitar conectores/MCP sin uso con `/context`. |
-| **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (385 tests). |
+| **Rama** | `claude/release-v0.1.0` |
+| **Fase / tarea** | `0.1`-`0.4` y R5 (`grun.lock/1`) ya en `main` (PR #6, `c827879`). Esta rama solo trae el arreglo de los tests de la CLI de vendor con locale en español (R3.1) y el README al día. Presupuesto de compactaciones: 0 |
+| **Último punto estable** | `main` fusionada en la rama (`c827879`); check en verde sobre la fusión. |
+| **Siguiente paso** | Retro decidida (T1 aplicada; P1-P3 al flujo). Marca de revisión y PR a `main` (skill `pr`); fusionar solo con el CI en verde y la confirmación de la persona. Pendiente de la persona: `flock(1)` en `ollamaQueue.ts` de WMF y prueba en la Deck. |
+| **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (402 tests) sobre la fusión con `main`, con locale `es_ES`. |
 
 ## Autoría
 

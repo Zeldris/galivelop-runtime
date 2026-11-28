@@ -227,3 +227,21 @@ file (format: header of scripts/questions.py). Answer by number: `questions.py a
 - Recommendation: Sí: el roadmap lo marca como 0.4 (R5, protocolo grun.lock/1 y flock en ollamaQueue.ts de WMF); empezar por el protocolo en este repo, WMF lo integra la persona o su sesión.
 - Answer: sí, protocolo en este repo
 - Answered: 2026-11-27
+
+## Q-26
+- Refs: R3.1
+- Status: answered
+- Asked: 2026-11-28
+- Question: T1: ¿apunto la medida en gw-opt-tokens.md y corrijo el arranque fijo (~82 k → ~22 k)? ¿Quitaste ya los conectores/MCP sin uso (para borrar ese pendiente)?
+- Recommendation: ok: aplicarla
+- Answer: ok
+- Answered: 2026-11-28
+
+## Q-27
+- Refs: R3.1
+- Status: answered
+- Asked: 2026-11-28
+- Question: P1-P3 (gancho Stop sin CI en commits del ledger, aviso de main por delante en recover.py, Refs automático en merge-main.py): ¿las mando al flujo?
+- Recommendation: ok: al apartado For Galivelop-workflow
+- Answer: ok
+- Answered: 2026-11-28
