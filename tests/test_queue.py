@@ -60,6 +60,22 @@ class QueueBase(unittest.TestCase):
         return proc
 
 
+class StopBatchTypeTests(QueueBase):
+    def test_true_is_not_batch_one(self):
+        self.add(2)
+        self.assertEqual(self.q.stop_batch(True, "x"), [])
+        self.assertEqual(self.ids(["queued"]), [1, 2])
+        self.assertEqual(len(self.q.stop_batch(1, "x")), 2)
+
+    def test_infinite_eta_is_refused(self):
+        self.add(1)
+        entry = self.q.claim()
+        for eta in (float("inf"), float("nan")):
+            self.assertEqual(self.code(self.q.set_progress, entry["id"], {"step": 0, "steps": 1, "etaS": eta}),
+                             "queue.bad_progress")
+        self.assertNotIn("Infinity", paths.queue_path(self.data).read_text(encoding="utf-8"))
+
+
 class OrderTests(QueueBase):  # invariant 7
     def test_enqueue_fields(self):
         entry = self.add()[0]
@@ -307,6 +323,11 @@ class AtomicTests(QueueBase):  # invariant 10
                 self.q.claim()
         self.assertEqual(self.q.get(1)["state"], "queued")
 
+    def test_a_file_nested_too_deep_is_corrupt(self):
+        paths.queue_path(self.data).parent.mkdir(parents=True)
+        paths.queue_path(self.data).write_text("[" * 100000, encoding="utf-8")
+        self.assertEqual(self.code(self.q.list_entries), "queue.corrupt")
+
     def test_corrupt_file(self):
         paths.queue_path(self.data).parent.mkdir(parents=True)
         paths.queue_path(self.data).write_text("{nope", encoding="utf-8")
@@ -544,7 +565,78 @@ class HeldTests(QueueBase):
         self.assertEqual(len(q.list_runnable()), 1)
 
 
+class HooksTests(QueueBase):
+    def test_checks_reject_before_queueing_anything(self):
+        self.q = queue.Queue(self.data, checks=lambda i: "no prompt" if not i.get("prompt") else None)
+        with self.assertRaises(GrunError) as cm:
+            self.q.enqueue([{"prompt": "a"}, {"prompt": ""}])
+        self.assertEqual(cm.exception.code, "queue.bad_item")
+        self.assertEqual(cm.exception.params["index"], 1)
+        self.assertEqual(cm.exception.params["reason"], "no prompt")
+        self.assertEqual(self.ids(), [])
+        self.assertEqual(len(self.q.enqueue([{"prompt": "a"}])), 1)
+
+    def test_checks_empty_reason_is_a_reason(self):
+        self.q = queue.Queue(self.data, checks=lambda i: "")
+        with self.assertRaises(GrunError) as cm:
+            self.q.enqueue([{"a": 1}])
+        self.assertEqual(cm.exception.code, "queue.bad_item")
+        self.assertEqual(cm.exception.params["reason"], "")
+        self.assertEqual(self.ids(), [])
+
+    def test_enqueue_takes_a_generator_and_reads_it_once(self):
+        seen = []
+
+        def gen():
+            for i in range(3):
+                seen.append(i)
+                yield {"n": i}
+        added = self.q.enqueue(gen())
+        self.assertEqual([e["n"] for e in added], [0, 1, 2])
+        self.assertEqual(seen, [0, 1, 2])
+        self.assertEqual(len(self.ids()), 3)
+        self.assertEqual(added[0]["batch"]["size"], 3)
+
+    def test_checks_own_error_goes_up_as_is(self):
+        def checks(item):
+            raise GrunError("queue.unknown", id=7)
+        self.q = queue.Queue(self.data, checks=checks)
+        self.assertEqual(self.code(self.q.enqueue, [{"a": 1}]), "queue.unknown")
+
+    def test_checks_get_a_copy(self):
+        def checks(item):
+            item["x"] = 1
+        self.q = queue.Queue(self.data, checks=checks)
+        self.assertNotIn("x", self.q.enqueue([{"a": 1}])[0])
+
+    def test_estimate_in_view(self):
+        self.q = queue.Queue(self.data, estimate=lambda e: 1500 if e["n"] == 0 else None)
+        self.add(2, batch=False)
+        views = [self.q.entry_view(e) for e in self.q.list_entries()]
+        self.assertEqual(views[0]["estimateMs"], 1500)
+        self.assertNotIn("estimateMs", views[1])
+
+    def test_estimate_failure_or_bad_value_is_ignored(self):
+        for hook in (lambda e: 1 / 0, lambda e: "soon", lambda e: -5, lambda e: True,
+                     lambda e: float("inf"), lambda e: float("nan")):
+            self.q = queue.Queue(self.data, estimate=hook)
+            self.add(1)
+            self.assertNotIn("estimateMs", self.q.entry_view(self.q.list_entries()[-1]))
+
+
 class PruneTests(QueueBase):
+    def test_prunes_by_finish_order_not_arrival(self):
+        self.q = queue.Queue(self.data, keep_terminal=2)
+        base = {"state": "done", "pid": None, "startedAt": None, "error": None, "attemptId": None,
+                "cancelRequested": False, "orphanCount": 0, "enqueuedAt": "2026-01-01T00:00:00Z"}
+        # arrival order 1, 2, 3; finish order 3, 1, 2: 3 finished first, so it is the one to go
+        entries = [dict(base, id=1, position=1, finishedAt="2026-01-01T00:00:20Z"),
+                   dict(base, id=2, position=2, finishedAt="2026-01-01T00:00:30Z"),
+                   dict(base, id=3, position=3, finishedAt="2026-01-01T00:00:10Z")]
+        self.write_raw({"nextId": 4, "entries": entries})
+        self.assertEqual(self.ids(), [1, 2])
+
+
     def test_keeps_the_last_terminal(self):
         self.q = queue.Queue(self.data, keep_terminal=2)
         self.add(5, batch=False)

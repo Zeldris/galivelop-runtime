@@ -40,8 +40,25 @@ El desalojo entra en `0.1`, no en `0.4`: gvoice retira su script en R3 (D-7) y n
 | Id | Paso | Estado |
 |---|---|---|
 | R3.1 | **`grun vendor`:** copia con `VENDOR.json` y huella sha256, y su verificación (`docs/tasks/R3.1.md`) | hecho (2026-11-27) |
-| R3.2 | **Alias `GVOICE_STATE_HOME` retirado** (D-1), cuando gvoice ya use `GALIVELOP_STATE_HOME` | pendiente |
-| R3.3 | **Barrido de leves:** función común de lectura de JSON que da el código `bad_*` ante `RecursionError`/`OSError` (`doctor`, `queue`, `vendor`), más los leves de `doctor.py` y `vendor.py` de `pending.md` | pendiente |
+| R3.2 | **Alias `GVOICE_STATE_HOME` retirado** (D-1), cuando gvoice ya use `GALIVELOP_STATE_HOME` | hecho (2026-11-27) |
+| R3.3 | **Barrido de leves:** función común de lectura de JSON que da el código `bad_*` ante `RecursionError`/`OSError` (`doctor`, `queue`, `vendor`), más los leves de `doctor.py` y `vendor.py` de `pending.md` | hecho (2026-11-27) |
+
+## `0.3` «Servidor y lanzador» (R4)
+
+Solo lo que vive en este repo; lo de gimg (borrar copias, `gimg doctor` que llama a `grun.doctor.diagnose`, usar el
+servidor y el lanzador) lo hace la persona o una sesión en gimg, y se apunta en `pending.md`. Fuentes leídas de gimg
+(solo lectura): `service.py` (`maybe_launch_worker`, l.190-217), `server.py` (tabla error→HTTP l.44-93, `_check_origin`
+l.275-286, rutas de cola, `health` l.381-390).
+
+| Id | Paso | Estado |
+|---|---|---|
+| R4.1 | **Servidor base** (`grun/server.py`, D-2): bind solo a `127.0.0.1`, comprobación de `Host`/`Origin`/`Sec-Fetch-Site` (`net.non_local_host`, invariante 11), `serve.lock` + `serve.json`, tabla error→HTTP genérica con tabla de la aplicación inyectable, `health` y rutas de cola (listar, vista previa, cancelar, mover, lotes, pausa, `clear`) | hecha (`docs/tasks/R4.1.md`) |
+| R4.2 | **Ganchos de cola** (D-6): `Checks` (validación antes de encolar) y `Estimate` (`estimateMs` en la vista); `held` y `clean_pending` ya existen | hecho (2026-11-27) |
+| R4.3 | **Lanzador** (`grun/launcher.py`, D-11): `maybe_launch(queue, command, log, ...)` desde `maybe_launch_worker`, con la cola y el comando inyectados | hecha (`docs/tasks/R4.3.md`) |
+| R4.4 | **Invariante 13:** respuestas de `/api/queue` fijadas como ejemplo y validadas contra `grun.queue/0` | hecha (`docs/tasks/R4.4.md`) |
+
+Bloqueo externo: R2 (gimg con `machine_lock.py` y `held_fds`) no está en el checkout de gimg; sin él, «gimg borra su
+copia de `machine_lock.py`» no tiene objeto y la prueba de gimg de la versión no se puede dar.
 
 ## Bloqueos externos
 

@@ -3,6 +3,12 @@ import sys
 
 from . import doctor, vendor
 
-if len(sys.argv) > 1 and sys.argv[1] == "vendor":
-    sys.exit(vendor.main(sys.argv[2:]))
-sys.exit(doctor.main())
+
+def main() -> int:
+    if len(sys.argv) > 1 and sys.argv[1] == "vendor":
+        return vendor.main(sys.argv[2:])
+    return doctor.main()
+
+
+if __name__ == "__main__":
+    sys.exit(main())

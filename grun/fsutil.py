@@ -10,6 +10,8 @@ import os
 import tempfile
 from pathlib import Path
 
+from .errors import GrunError
+
 _MISSING = object()
 
 
@@ -92,6 +94,17 @@ def read_json(path, default=_MISSING):
         return default
 
 
+def read_json_as(file, code, default=_MISSING, **params):
+    """`read_json` whose unreadable or invalid content (OSError, ValueError, a JSON nested too deep) raises
+    `GrunError(code, **params)`; a missing file is still `default` (or FileNotFoundError)."""
+    try:
+        return read_json(file, default)
+    except FileNotFoundError:
+        raise
+    except (OSError, ValueError, RecursionError):
+        raise GrunError(code, **params) from None
+
+
 @contextlib.contextmanager
 def lock(path):
     """Exclusive flock on `<path>.lock` for a read-modify-write of `path`."""
@@ -125,7 +138,8 @@ def try_lock(path):
 
 def held(path):
     """Does a process hold `path` (a lock file itself, not ``<path>.lock``) right now? ``True`` / ``False``, or
-    ``None`` when it cannot be known (the file exists but cannot be opened). A pure read: it creates nothing, and no
+    ``None`` when it cannot be known (the file exists but cannot be opened, or ``flock`` fails for a reason other
+    than the lock being taken). A pure read: it creates nothing, and no
     file means no holder. The probe takes the lock *shared*, so two probes at the same moment never see each other
     as the holder. Adapted from gimg@HEAD gimg/fsutil.py."""
     try:
@@ -137,8 +151,10 @@ def held(path):
     try:
         try:
             fcntl.flock(fd, fcntl.LOCK_SH | fcntl.LOCK_NB)
-        except OSError:
+        except BlockingIOError:
             return True
+        except OSError:  # e.g. ENOLCK: the lock could not be tried, so nobody can tell
+            return None
         return False
     finally:
         os.close(fd)  # closing releases the lock

@@ -11,7 +11,7 @@ from pathlib import Path
 
 from .errors import GrunError
 
-NAME_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
+NAME_RE = re.compile(r"[a-z0-9][a-z0-9-]*")
 OLLAMA_MODES = ("unload", "abort", "ignore")
 
 
@@ -52,6 +52,8 @@ def _read_json(path):
             return json.load(fh)
     except FileNotFoundError:
         raise GrunError("machine.missing", path=str(path))
+    except RecursionError:  # JSON nested too deep
+        raise GrunError("machine.unreadable", path=str(path), reason="nested too deep") from None
     except (OSError, ValueError) as exc:  # a bad encoding or bad JSON is a ValueError
         raise GrunError("machine.unreadable", path=str(path), reason=getattr(exc, "strerror", None) or str(exc))
 
@@ -63,7 +65,7 @@ def _config_ref(config_path):
     try:
         with open(config_path, encoding="utf-8") as fh:
             value = json.load(fh).get("machineProfile")
-    except (OSError, ValueError, AttributeError):
+    except (OSError, ValueError, AttributeError, RecursionError):
         return None
     return value if isinstance(value, str) and value else None
 
@@ -76,7 +78,7 @@ def load_profile(ref=None, *, presets, env_var, config_path=None, default="steam
     if "/" in ref or ref.endswith(".json"):
         path = Path(ref)
     else:
-        if not NAME_RE.match(ref):
+        if not NAME_RE.fullmatch(ref):
             raise GrunError("machine.bad_name", name=ref)
         path = Path(presets) / (ref + ".json")
     profile = _read_json(path)

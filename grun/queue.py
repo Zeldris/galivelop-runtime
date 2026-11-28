@@ -90,6 +90,13 @@ def _pos(entry: dict):
     return (pos if isinstance(pos, (int, float)) and not isinstance(pos, bool) else entry["id"], entry["id"])
 
 
+def _finished(entry: dict) -> str:
+    """Sort key of a finished entry: when it finished (an older file without a valid ``finishedAt`` goes first);
+    the sort is stable, so entries finished in the same second keep their arrival order."""
+    at = entry.get("finishedAt")
+    return at if isinstance(at, str) else ""
+
+
 def _slots(line: list) -> list:
     """The positions a reordered `line` is dealt: its own when strictly increasing, else distinct ones from the
     lowest (repeated positions would let the id tie-break undo a move)."""
@@ -127,7 +134,8 @@ def _check_move(to) -> None:
 
 
 def _number(value) -> bool:
-    return isinstance(value, (int, float)) and not isinstance(value, bool) and value >= 0
+    return isinstance(value, (int, float)) and not isinstance(value, bool) \
+        and math.isfinite(value) and value >= 0
 
 
 def make_error(code: str, errors=(), **params) -> dict:
@@ -184,22 +192,26 @@ class Queue:
 
     `held(entry)`: ``None`` or the reason an entry must not be claimed (`entry_view` shows it as ``held``).
     `clean_pending(entry)`: called for each entry recovered; its exceptions are swallowed.
+    `checks(item)`: called by `enqueue` for each item before anything is queued; ``None`` if valid, else the reason
+    (a string, ``queue.bad_item``); it may raise a `GrunError` of its own, which goes up as is.
+    `estimate(entry)`: milliseconds the entry should take, or ``None``; `entry_view` shows it as ``estimateMs``
+    (an exception or a non-number is ignored: a view must always render).
     `keep_terminal`: how many finished entries are kept."""
 
-    def __init__(self, data, *, held=None, clean_pending=None, keep_terminal: int = 200):
+    def __init__(self, data, *, held=None, clean_pending=None, checks=None, estimate=None, keep_terminal: int = 200):
         self.data = Path(data)
         self._held = held
         self._clean_pending = clean_pending
+        self._checks = checks
+        self._estimate = estimate
         self.keep_terminal = keep_terminal
         self._path = paths.queue_path(self.data)
 
     # -- storage -----------------------------------------------------------------------------------------
 
     def _load(self) -> dict:
-        try:
-            data = fsutil.read_json(self._path, default={"nextId": 1, "entries": []})
-        except (OSError, ValueError):
-            raise GrunError("queue.corrupt", path=str(self._path))
+        data = fsutil.read_json_as(self._path, "queue.corrupt", default={"nextId": 1, "entries": []},
+                                   path=str(self._path))
         if (not isinstance(data, dict) or not isinstance(data.get("entries"), list)
                 or not isinstance(data.get("nextId"), int) or isinstance(data.get("nextId"), bool)
                 or not all(isinstance(e, dict) and e.get("state") in STATES and type(e.get("id")) is int
@@ -247,7 +259,7 @@ class Queue:
                 else:
                     _transition(entry, "queued", via="recovery")
             recovered.append(entry)
-        done = [e for e in data["entries"] if e["state"] in TERMINAL]
+        done = sorted((e for e in data["entries"] if e["state"] in TERMINAL), key=_finished)  # oldest finish first
         if len(done) > self.keep_terminal:
             drop = {e["id"] for e in done[:len(done) - self.keep_terminal]}
             data["entries"] = [e for e in data["entries"] if e["id"] not in drop]
@@ -298,13 +310,18 @@ class Queue:
         """Queue one entry per item (a dict with the application's fields, deep-copied); returns the new entries.
 
         A batch (``batch`` in each entry) if `batch` is True, or None and there is more than one item; ``False``
-        never. An item that is not a dict or carries a key of `CORE_KEYS` is ``queue.bad_item`` and nothing is queued."""
+        never. An item that is not a dict or carries a key of `CORE_KEYS` is ``queue.bad_item`` and nothing is queued.
+        `items` is read once (any iterable, a generator included)."""
+        items = list(items)
         for index, item in enumerate(items):
             if not isinstance(item, dict):
                 raise GrunError("queue.bad_item", index=index, reason="is not an object")
             clash = [k for k in CORE_KEYS if k in item]
             if clash:
                 raise GrunError("queue.bad_item", index=index, reason="uses the reserved field " + ", ".join(clash))
+            reason = None if self._checks is None else self._checks(copy.deepcopy(item))
+            if reason is not None:  # "" is a reason too: only None means valid
+                raise GrunError("queue.bad_item", index=index, reason=str(reason))
         now = _now()
 
         def change(data):
@@ -342,8 +359,16 @@ class Queue:
         return self._txn(lambda data: bool(_find(data, entry_id).get("cancelRequested")))
 
     def entry_view(self, entry: dict, lang: str | None = None) -> dict:
-        """The JSON form of an entry: the entry plus ``held`` (the reason, if retained) and ``errorText``."""
+        """The JSON form of an entry: the entry plus ``held`` (the reason, if retained), ``estimateMs`` (if the
+        `estimate` hook gives one) and ``errorText``."""
         item = dict(entry)
+        if self._estimate is not None:
+            try:
+                ms = self._estimate(copy.deepcopy(entry))
+            except Exception:
+                ms = None
+            if _number(ms):
+                item["estimateMs"] = ms
         held = self._is_held(entry)
         if held is not None:
             item["held"] = held
@@ -386,10 +411,11 @@ class Queue:
 
     def stop_batch(self, batch_id, by) -> list:
         """The batch is good enough: cancel its ``queued`` entries (the running and finished ones stay) and record
-        ``stoppedBy`` = `by` in each. Returns the entries cancelled (none if the batch is unknown)."""
+        ``stoppedBy`` = `by` in each. Returns the entries cancelled (none if the batch is unknown or `batch_id` is not
+        an int: ``True`` is not batch 1)."""
         def change(data):
             found = [e for e in data["entries"] if e["state"] == "queued" and isinstance(e.get("batch"), dict)
-                     and e["batch"].get("id") == batch_id]
+                     and type(batch_id) is int and e["batch"].get("id") == batch_id]
             for entry in found:
                 _transition(entry, "cancelled", via="stop_batch")
                 entry["stoppedBy"] = by

@@ -234,7 +234,7 @@ class MainTests(DoctorBase):
         for argv in ([], ["doctor"], ["other", "--data", "x"], ["doctor", "--data", "x", "--bogus"]):
             code, _, err = self.run_main(*argv)
             self.assertEqual(code, 2, argv)
-            self.assertTrue(err.strip(), argv)
+            self.assertIn(": error:", err, argv)
 
     def test_json_output(self):
         self.write_queue([self.entry(1, "running")])
@@ -251,6 +251,38 @@ class MainTests(DoctorBase):
         self.assertEqual(code, 1)
         self.assertNotIn("Traceback", err)
         self.assertIn("queue.json", out)
+
+    def test_a_too_deep_queue_is_a_problem_not_a_traceback(self):
+        self.data.mkdir()
+        paths.queue_path(self.data).write_text("[" * 100000, encoding="utf-8")
+        code, out, err = self.run_main("doctor", "--data", str(self.data), "--json")
+        self.assertEqual(code, 1)
+        self.assertEqual(json.loads(out)["queue"]["error"], "queue.corrupt")
+
+    def test_the_error_path_of_json_has_the_same_keys_as_a_report(self):
+        from grun.errors import GrunError
+        with mock.patch.object(doctor, "diagnose", side_effect=GrunError("queue.corrupt", path="/x")):
+            code, out, _ = self.run_main("doctor", "--data", str(self.data), "--json")
+        report = json.loads(out)
+        self.assertEqual(code, 1)
+        self.assertEqual(sorted(report), ["app", "locks", "machine", "orphans", "problems", "queue"])
+        self.assertEqual((report["machine"], report["queue"], report["locks"]), (None, None, []))
+
+    def test_control_characters_of_the_holder_are_not_printed(self):
+        holder = {"app": "gimg\x1b[31m", "entry": "1\n2", "pid": 7, "since": "2026\x1b]0;x\x07"}
+        report = {"machine": {"path": "/m", "busy": True, "holder": holder}, "problems": []}
+        text = doctor.render(report, "en")
+        self.assertNotIn("\x1b", text)
+        self.assertNotIn("\x07", text)
+        self.assertIn("gimg\\x1b[31m", text)
+        self.assertIn("1\\x0a2", text)
+        self.assertIn("2026\\x1b]0;x\\x07", text)
+
+    def test_importing_the_module_does_not_run_the_command(self):
+        env = dict(os.environ, PYTHONPATH=str(ROOT))
+        proc = subprocess.run([sys.executable, "-c", "import grun.__main__"], capture_output=True, text=True,
+                              cwd=str(ROOT), env=env)
+        self.assertEqual((proc.returncode, proc.stderr), (0, ""))
 
     def test_python_dash_m(self):
         env = dict(os.environ, PYTHONPATH=str(ROOT))

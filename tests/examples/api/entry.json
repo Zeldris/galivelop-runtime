@@ -1,0 +1,3 @@
+{"id": 2, "position": 2, "state": "cancelled", "pid": null, "enqueuedAt": "2026-11-27T10:00:01Z",
+ "startedAt": null, "finishedAt": "2026-11-27T10:01:00Z", "error": null, "attemptId": null,
+ "cancelRequested": false, "orphanCount": 0, "project": "p"}

@@ -35,8 +35,8 @@ SIGTERM_WORKER = (  # a worker whose engine sleeps; a finally block leaves a mar
     "data, marker = sys.argv[1], sys.argv[2]\n"
     "class E:\n"
     "    def run(self, job, on_progress, should_cancel, pass_fds):\n"
-    "        print('engine', flush=True)\n"
     "        try:\n"
+    "            print('engine', flush=True)\n"  # inside the try: a SIGTERM right after the print still runs the finally
     "            time.sleep(60)\n"
     "        finally:\n"
     "            open(marker, 'w').write('finally')\n"

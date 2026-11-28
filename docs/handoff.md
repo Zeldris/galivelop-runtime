@@ -9,10 +9,10 @@
 | Campo | Valor |
 |---|---|
 | **Rama** | `claude/release-v0.1.0` |
-| **Fase / tarea** | `0.1` (R1) publicada: etiqueta `v0.1.0` en `90c468b` y release en GitHub. `0.2` (R3): R3.1 hecho y revisado. Presupuesto de compactaciones: 0 |
-| **Último punto estable** | `v0.1.0` (`90c468b`), publicada el 2026-11-27. En `90c468b` no corre CI (push a `main`); el CI verde es el del PR #3, sobre `27b32c5` (mismo árbol). |
-| **Siguiente paso** | PR de `claude/release-v0.1.0` a `main` (test en español y README), con sus fases de revisión. Luego R3.2 (alias) cuando devuelva la sesión de gvoice (`session_01VdeHm9ESLr7pEB8izbfdt1`) y R3.3 (barrido de leves). |
-| **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (294 tests), con locale `es_ES` y `C.UTF-8`. |
+| **Fase / tarea** | `0.1`-`0.4` y R5 (`grun.lock/1`) ya en `main` (PR #6, `c827879`). Esta rama solo trae el arreglo de los tests de la CLI de vendor con locale en español (R3.1) y el README al día. Presupuesto de compactaciones: 0 |
+| **Último punto estable** | `main` fusionada en la rama (`c827879`); check en verde sobre la fusión. |
+| **Siguiente paso** | PR de `claude/release-v0.1.0` a `main`: falta gw-opt-tokens y la retro, presentarla a la persona, `reviewed.sh` y crear el PR (skill `pr`); fusionar solo con el CI en verde. Pendiente de la persona: `flock(1)` en `ollamaQueue.ts` de WMF, prueba en la Deck y quitar conectores/MCP sin uso con `/context`. |
+| **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (402 tests) sobre la fusión con `main`, con locale `es_ES`. |
 
 ## Autoría
 
@@ -26,11 +26,11 @@ La rama se reescribió el 2026-11-27 (autor y firmas) con permiso de la persona;
 
 ## Hecho (5 últimas)
 
-1. 2026-11-27 — R3.1: `grun vendor` (`grun/vendor.py`), copia con manifiesto y huella sha256 y su verificación (sin revisar).
-2. 2026-11-27 — R1.4: worker (`grun/worker.py`), interfaz del motor, desalojo de Ollama y `ProfileLoader`, con tests de las invariantes 4, 9 y 11 (sin revisar).
-3. 2026-11-27 — R1.3: cola (`grun/queue.py`) con los tests de las invariantes 7-10 y 12.
-4. 2026-11-27 — R1.2: candado de máquina (`grun/machine_lock.py`) con titular `grun.lock/0` y tests de las invariantes 1-6.
-5. 2026-11-27 — F0 cerrada (PR #1 en `main`); `0.1` empieza con el roadmap activado.
+1. 2026-11-27 — R4.1: servidor base (`grun/server.py`): Host/Origin, tabla error→HTTP con tabla de la aplicación, rutas de cola y `health`, `serve.lock`/`serve.json` (sin revisar).
+2. 2026-11-27 — R3.2: alias `GVOICE_STATE_HOME` retirado (gvoice ya usa `GALIVELOP_STATE_HOME`, confirmado por la persona).
+3. 2026-11-27 — R3.3: revisión de bloque, 2 medios arreglados (`export` atómico con `.grun.old-<pid>`, `profile` ante JSON hondo) y leves a pending.md.
+4. 2026-11-27 — R3.3: barrido de leves: fsutil.read_json_as (doctor, queue, vendor), leves de vendor.py y doctor.py (sin revisar)
+5. 2026-11-27 — R3.1: `grun vendor` (`grun/vendor.py`), copia con manifiesto y huella sha256 y su verificación (sin revisar).
 
 ## Pendiente
 

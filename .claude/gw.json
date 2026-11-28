@@ -315,8 +315,8 @@
     "rules": [],
     "command": ""
   },
-  "plan": [],
-  "taskId": "[A-Z]{2,5}-\\d+",
+  "plan": ["docs/roadmap.md"],
+  "taskId": "R\\d+\\.\\d+",
   "subagentCap": 30,
   "subagentCapStep": 10,
   "subagentCounterStaleDays": 7,

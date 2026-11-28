@@ -86,10 +86,10 @@ class PathTests(LockBase):
             ({"FLATPAK_ID": "com.x", "XDG_STATE_HOME": "/xdg"}, "/xdg/galivelop/gpu.lock"),
             ({"FLATPAK_ID": "com.x"}, "/h/.local/state/galivelop/gpu.lock"),
             ({"GALIVELOP_STATE_HOME": "/g", "XDG_STATE_HOME": "/xdg"}, "/g/gpu.lock"),
-            ({"GVOICE_STATE_HOME": "/v", "XDG_STATE_HOME": "/xdg"}, "/v/gpu.lock"),
+            ({"GVOICE_STATE_HOME": "/v", "XDG_STATE_HOME": "/xdg"}, "/xdg/galivelop/gpu.lock"),
             ({"GALIVELOP_STATE_HOME": "/g", "GVOICE_STATE_HOME": "/v"}, "/g/gpu.lock"),
-            ({"GALIVELOP_STATE_HOME": "rel", "GVOICE_STATE_HOME": "/v"}, "/v/gpu.lock"),
-            ({"FLATPAK_ID": "com.x", "GVOICE_STATE_HOME": "/v", "XDG_STATE_HOME": sandbox}, "/v/gpu.lock"),
+            ({"GALIVELOP_STATE_HOME": "rel", "GVOICE_STATE_HOME": "/v"}, "/h/.local/state/galivelop/gpu.lock"),
+            ({"FLATPAK_ID": "com.x", "GVOICE_STATE_HOME": "/v", "XDG_STATE_HOME": sandbox}, "/h/.local/state/galivelop/gpu.lock"),
         ]
         for extra, expected in table:
             base = {"GALIVELOP_STATE_HOME": "", "GVOICE_STATE_HOME": "", "XDG_STATE_HOME": "", "FLATPAK_ID": "",
@@ -216,6 +216,45 @@ class HoldTests(LockBase):
             with self.assertRaises(BlockingIOError):
                 fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
 
+    def test_nested_hold_in_one_thread_does_not_wait(self):
+        done = []
+
+        def run():
+            with machine_lock.hold():
+                with machine_lock.hold(poll_s=0.01):
+                    done.append(len(machine_lock.held_fds()))
+                self.assertEqual(len(machine_lock.held_fds()), 1)  # the outer still holds
+            done.append(machine_lock.held_fds())
+        t = threading.Thread(target=run, daemon=True)
+        t.start()
+        t.join(5)
+        self.assertFalse(t.is_alive(), "the nested hold waits for itself")
+        self.assertEqual(done, [1, ()])
+
+    def test_another_thread_still_waits(self):
+        got = []
+        with machine_lock.hold():
+            t = threading.Thread(target=lambda: got.append(machine_lock.hold(should_cancel=lambda: True, poll_s=0.01)
+                                                          .__enter__()), daemon=True)
+            t.start()
+            t.join(5)
+        self.assertEqual(got, [])  # it raised WaitCancelled instead of entering
+
+    def test_busy_unknown_when_the_file_cannot_be_opened(self):
+        machine_lock_file = paths.machine_lock_path()
+        machine_lock_file.parent.mkdir(parents=True, exist_ok=True)
+        machine_lock_file.write_text("")
+        with mock.patch("grun.machine_lock.os.open", side_effect=PermissionError(13, "denied")):
+            self.assertIsNone(machine_lock.busy())
+            self.assertIsNone(machine_lock.holder())
+
+    def test_busy_unknown_when_flock_fails_for_another_reason(self):
+        machine_lock_file = paths.machine_lock_path()
+        machine_lock_file.parent.mkdir(parents=True, exist_ok=True)
+        machine_lock_file.write_text("")
+        with mock.patch("grun.machine_lock.fcntl.flock", side_effect=OSError(37, "no locks")):
+            self.assertIsNone(machine_lock.busy())
+
     def test_held_fds(self):
         self.assertEqual(machine_lock.held_fds(), ())
         with machine_lock.hold():
@@ -229,7 +268,7 @@ class HolderTests(LockBase):
     def test_record_while_held(self):
         with machine_lock.hold(app="galivelop-voice", entry="job-1"):
             rec = machine_lock.holder()
-            self.assertEqual(rec["schema"], "grun.lock/0")
+            self.assertEqual(rec["schema"], "grun.lock/1")
             self.assertEqual(rec["app"], "galivelop-voice")
             self.assertEqual(rec["entry"], "job-1")
             self.assertEqual(rec["pid"], os.getpid())
