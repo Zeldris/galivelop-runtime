@@ -1,6 +1,6 @@
 # Retro 2026-11-28: PR de `claude/release-v0.1.0` a `main`
 
-**Estado:** pendiente de la persona.
+**Estado:** aprobada por la persona (2026-11-28): T1 aplicada; P1, P2 y P3 aprobadas para el flujo (abajo).
 
 Sesión tras `/clear`: fusión de `origin/main` (0.2-0.4 y R5, de otra sesión) en la rama, revisión en sesión del diff
 trivial (tests de `grun vendor` con idioma fijo, README), check en verde (402 tests, `es_ES`).
