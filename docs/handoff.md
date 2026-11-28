@@ -11,8 +11,8 @@
 | **Rama** | `claude/release-v0.1.0` |
 | **Fase / tarea** | `0.1`-`0.4` y R5 (`grun.lock/1`) ya en `main` (PR #6, `c827879`). Esta rama solo trae el arreglo de los tests de la CLI de vendor con locale en español (R3.1) y el README al día. Presupuesto de compactaciones: 0 |
 | **Último punto estable** | PR #7 fusionado en `main` (`6d2fc29`, 2026-11-28) con confirmación de la persona y CI en verde sobre `28a4905`. |
-| **Siguiente paso** | Siguiente tarea del roadmap: `R6.1` (barrido de `ollama.py`, `0.5`). Llevar P1-P3 de `docs/records/retro-2026-11-28-release-v0-1-0.md` al flujo. Pendiente de la persona: `flock(1)` en `ollamaQueue.ts` de WMF y prueba en la Deck. |
-| **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (402 tests) sobre la fusión con `main`, con locale `es_ES`. |
+| **Siguiente paso** | R6.1 hecha (barrido de `ollama.py`, 4 leves, sin revisar). Siguiente: `R6.2` por definir en `0.5` (`grun.run/1` que lee GVE, D-13; GVE por el turno, D-3; `grun.trace/0`, D-16). Llevar P1-P3 de `docs/records/retro-2026-11-28-release-v0-1-0.md` al flujo. Pendiente de la persona: `flock(1)` en `ollamaQueue.ts` de WMF y prueba en la Deck. |
+| **Check** | `python3 -m unittest discover -s tests`, `python3 .claude/gw/scripts/tests-after-main.py`, `python3 .claude/gw/scripts/ci-local.py --validate`: verde (408 tests), con locale `es_ES`. |
 
 ## Autoría
 

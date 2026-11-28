@@ -60,6 +60,12 @@ l.275-286, rutas de cola, `health` l.381-390).
 Bloqueo externo: R2 (gimg con `machine_lock.py` y `held_fds`) no está en el checkout de gimg; sin él, «gimg borra su
 copia de `machine_lock.py`» no tiene objeto y la prueba de gimg de la versión no se puede dar.
 
+## `0.5` «GVE» (R6)
+
+| Id | Paso | Estado |
+|---|---|---|
+| R6.1 | **Barrido de `ollama.py`:** URL con ruta/query/fragmento rechazada, `evict` mira `should_cancel` antes de cada descarga, `holder` ante JSON hondo, `doctor` avisa de `busy()` desconocido | hecho (2026-11-28) |
+
 ## Bloqueos externos
 
 - La validación con gart espera a que gart tenga su registro; `gmod.machine/0` espera a gmod. Ninguno bloquea
